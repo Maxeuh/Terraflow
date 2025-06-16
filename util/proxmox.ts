@@ -16,6 +16,12 @@ class ProxmoxProvider extends TerraNode {
         super();
         this._varTypes = [
             {
+                name: "username",
+                type: FieldType.String,
+                regex: /^[a-zA-Z0-9._-]+@(pam|pve)$/,
+                value: this.insecure
+            },
+            {
                 name: "password",
                 type: FieldType.Password,
                 regex: /.*/,
@@ -25,6 +31,11 @@ class ProxmoxProvider extends TerraNode {
                 type: FieldType.CheckBox,
                 regex: /.*/,
                 value: this.insecure
+            }, {
+                name: "port",
+                type: FieldType.Integer,
+                regex: /.*/,
+                value: this.port
             }
         ]
     }
