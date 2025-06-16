@@ -1,6 +1,7 @@
 import {FieldType, TerraNode} from "@/util/types";
+import {Network} from "@/util/network";
 
-class ProxmoxProvider extends TerraNode {
+export class ProxmoxProvider extends TerraNode {
     /**
      * Represent a Proxmox provider
      */
@@ -11,6 +12,7 @@ class ProxmoxProvider extends TerraNode {
     private username: string = "root@pam";
     private password: string = "";
     private nodeName: string = "";
+    private _networks: Network[] = [];
 
     constructor() {
         super();
@@ -38,6 +40,16 @@ class ProxmoxProvider extends TerraNode {
                 value: this.port
             }
         ]
+    }
+
+    addNetwork(network: Network): void {
+        this._networks.push(network);
+        network.setProxmox(this);
+    }
+
+    removeNetwork(network: Network): void {
+        this._networks = this._networks.filter(n => n !== network);
+        network.setProxmox(null);
     }
 
     generateConfigFileContent(): string {

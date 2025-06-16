@@ -1,8 +1,7 @@
-import { FieldType, TerraNode } from "@/util/types";
-import { VirtualMachineTemplate } from "@/util/virtual_machine_template";
+import {FieldType, TerraNode} from "@/util/types";
+import {VirtualMachineTemplate} from "@/util/virtual_machine_template";
 import * as fs from "fs";
-
-
+import {Network} from "@/util/network";
 
 
 export class VirtualMachine extends TerraNode {
@@ -10,33 +9,36 @@ export class VirtualMachine extends TerraNode {
     public name: string = "";
     public username: string = "root";
     public keys: string = "";
-    public address: string ="0.0.0.0/24";
+    public address: string = "0.0.0.0/24";
     public gateway: string = "0.0.0.0/24";
-    public _bridge: string = "vmbr0" ;
     public image_name: string = "";
     public _hardware: VirtualMachineTemplate | undefined = undefined;
-
-    constructor(){
-      super();
-      this._varTypes = [
-        {
-          name: "address",
-          type: FieldType.String,
-          regex: /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\/([0-9]|[12]\d|3[0-2])$/,
-          value: this.address
-        }, {
-          name: "gateway",
-          type: FieldType.String,
-          regex: /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\/([0-9]|[12]\d|3[0-2])$/,
-          value: this.gateway
-        }
-      ]
-    }
-
+    public _network: Network | null = null;
     public name_resource: string = `test`;
 
+    constructor() {
+        super();
+        this._varTypes = [
+            {
+                name: "address",
+                type: FieldType.String,
+                regex: /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\/([0-9]|[12]\d|3[0-2])$/,
+                value: this.address
+            }, {
+                name: "gateway",
+                type: FieldType.String,
+                regex: /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\/([0-9]|[12]\d|3[0-2])$/,
+                value: this.gateway
+            }
+        ]
+    }
+
+    setNetwork(network: Network | null) {
+        this._network = network;
+    }
+
     generateConfigFileContent(): string {
-        return  `resource "proxmox_virtual_environment_vm" "${this.name_resource}" {
+        return `resource "proxmox_virtual_environment_vm" "${this.name_resource}" {
   name      = "${this.name}"
   node_name = "${this._hardware?.node_name}"
 
@@ -64,7 +66,7 @@ export class VirtualMachine extends TerraNode {
   }
 
   network_device {
-    bridge = "${this._bridge}"
+    bridge = "${this._network?.name}"
   }
 }
   
@@ -75,7 +77,7 @@ resource "proxmox_virtual_environment_download_file" "${this.image_name}" {
 
   url = "${this._hardware?.url}"
 }`
-            
+
     }
 
     writeConfigFile(fileName: string) {
