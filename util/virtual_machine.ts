@@ -1,0 +1,86 @@
+import { FieldType, TerraNode } from "@/util/types";
+import { VirtualMachineTemplate } from "@/util/virtual_machine_template";
+import * as fs from "fs";
+
+
+
+
+export class VirtualMachine extends TerraNode {
+
+    public name: string = "";
+    public username: string = "root";
+    public keys: string = "";
+    public address: string ="0.0.0.0/24";
+    public gateway: string = "0.0.0.0/24";
+    public _bridge: string = "vmbr0" ;
+    public image_name: string = "";
+    public _hardware: VirtualMachineTemplate | undefined = undefined;
+
+    constructor(){
+      super();
+      this._varTypes = [
+        {
+          name: "address",
+          type: FieldType.String,
+          regex: /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\/([0-9]|[12]\d|3[0-2])$/,
+          value: this.address
+        }, {
+          name: "gateway",
+          type: FieldType.String,
+          regex: /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\/([0-9]|[12]\d|3[0-2])$/,
+          value: this.gateway
+        }
+      ]
+    }
+
+    public name_resource: string = `test`;
+
+    generateConfigFileContent(): string {
+        return  `resource "proxmox_virtual_environment_vm" "${this.name_resource}" {
+  name      = "${this.name}"
+  node_name = "${this._hardware?.node_name}"
+
+  initialization {
+    ip_config {
+      ipv4 {
+        address = "${this.address}"
+        gateway = "${this.gateway}"
+      }
+    }
+
+    user_account {
+      username = "${this.username}"
+      keys     = ${this.keys}
+    }
+  }
+
+  disk {
+    datastore_id = "${this._hardware?.datastore_id}"
+    file_id      = ${this._hardware?.file_id}
+    interface    = "${this._hardware?.interfaces}"
+    iothread     = ${this._hardware?.iothread}
+    discard      = "${this._hardware?.discard}"
+    size         = ${this._hardware?.size}
+  }
+
+  network_device {
+    bridge = "${this._bridge}"
+  }
+}
+  
+resource "proxmox_virtual_environment_download_file" "${this.image_name}" {
+  content_type = "${this._hardware?.content_type}"
+  datastore_id = "${this._hardware?.datastore_id}"
+  node_name    = "${this._hardware?.node_name}"
+
+  url = "${this._hardware?.url}"
+}`
+            
+    }
+
+    writeConfigFile(fileName: string) {
+        const content = this.generateConfigFileContent();
+        fs.writeFileSync(fileName, content);
+    }
+}
+
