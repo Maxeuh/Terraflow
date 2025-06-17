@@ -43,15 +43,19 @@ export class VirtualMachineTemplate extends TerraNode {
 
     getProxmox() : ProxmoxProvider | null {
         if (this._proxmox != null) {
-            return this._proxmox
+            return this._proxmox;
         }
         else {
-            return null
-        };
+            return null;
+        }
+    }
+
+    getResourceName(): string {
+        return this.name;
     }
 
     generateConfigNode(): string {
-        return `"proxmox_virtual_environment_vm" "${this.name}" {
+        return `"proxmox_virtual_environment_vm" "${this.getResourceName()}" {
     name = "${this.name}"
     description = "${this.description}"
  
@@ -60,7 +64,7 @@ export class VirtualMachineTemplate extends TerraNode {
     stop_on_destroy = ${this.stopOnDestroy}
     
     cpu {
-        cores = ${this.cpu_cores}
+        cores = ${this.cpuCores}
         type = "host"
     }
     
@@ -72,7 +76,7 @@ export class VirtualMachineTemplate extends TerraNode {
     disk {
         datastore_id = "local-lvm"
         file_id = proxmox_virtual_environment_download_file.${this.sourceName}.id
-        interface = "${this.interface}"
+        interface = "${this.diskInterface}"
         size = ${this.diskSize}
     }
 }
