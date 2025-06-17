@@ -61,7 +61,7 @@ export class ProxmoxProvider extends TerraNode {
         network.setProxmox(null);
     }
 
-    generateConfigFileContent(): string {
+    generateConfigNode(): string {
         return `
 provider "proxmox" {
   alias = "${this.node_name}"
@@ -83,5 +83,9 @@ provider "proxmox" {
   
 }
         `;
+    }
+
+    getChildren(): TerraNode[] {
+        return this._networks;
     }
 }

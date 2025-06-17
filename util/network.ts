@@ -44,7 +44,7 @@ export class Network extends TerraNode {
         this.proxmox = proxmox;
     }
 
-    generateConfigFileContent(): string {
+    generateConfigNode(): string {
         return `resource "${this.name_resource_network}" "${this.name}" {
   depends_on = [
     ${this.img_network}
@@ -66,5 +66,7 @@ export class Network extends TerraNode {
         fs.writeFileSync(fileName, content);
     }
 
-
+    getChildren(): TerraNode[] {
+        return this.machines;
+    }
 }

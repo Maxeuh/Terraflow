@@ -61,7 +61,21 @@ export abstract class TerraNode {
         return fields;
     }
 
-    abstract generateConfigFileContent(): string;
+    generateConfigFileContent(): string {
+        let content: string = "";
+
+        content += this.generateConfigNode();
+
+
+        for (const child of this.getChildren()) {
+            content += "\n";
+            content += child.generateConfigFileContent();
+        }
+
+        return content;
+    }
+
+    abstract generateConfigNode(): string;
 
     /**
      * This method sets the form fields of the node
@@ -87,5 +101,8 @@ export abstract class TerraNode {
         return true;
     }
 
+    getChildren(): TerraNode[] {
+        return [];
+    }
 
 }
