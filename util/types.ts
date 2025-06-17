@@ -13,6 +13,7 @@ export type FormField = {
     value: any;
     type: FieldType;
     regex: RegExp;
+    mandatory: boolean;
 }
 
 // Represent a node.

@@ -18,7 +18,8 @@ export class Network extends TerraNode {
                 name: "address",
                 type: FieldType.String,
                 regex: /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\/([0-9]|[12]\d|3[0-2])$/,
-                value: this.address
+                value: this.address,
+                mandatory : true 
             }
         ]
     }

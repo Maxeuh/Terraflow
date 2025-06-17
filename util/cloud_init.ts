@@ -41,43 +41,51 @@ export class CloudInit extends TerraNode {
                 name: "hostname",
                 type: FieldType.String,
                 regex: /^[a-zA-Z0-9._-]$/,
-                value: this.hostname
+                value: this.hostname,
+                mandatory : true
             },
             {
                 name: "username",
                 type: FieldType.String,
                 regex: /^[a-zA-Z0-9._-]$/,
-                value: this.userName
+                value: this.userName,
+                mandatory : false
             }, {
                 name: "sudo",
                 type: FieldType.String,
                 regex: /.*/,
-                value: this.userSudo
+                value: this.userSudo,
+                mandatory : true 
             }, {
                 name: "shell",
                 type: FieldType.String,
                 regex: /.*/,
-                value: this.userShell
+                value: this.userShell,
+                mandatory : true 
             }, {
                 name: "package update",
                 type: FieldType.CheckBox,
                 regex: /.*/,
-                value: this.package_update
+                value: this.package_update,
+                mandatory : false
             }, {
                 name: "packages",
                 type: FieldType.String,
                 regex: /^([a-zA-Z0-9_-]+\s*)(\s*,\s*[a-zA-Z0-9_-]+\s*)*$/,
-                value: this.packages
+                value: this.packages,
+                mandatory : false 
             }, {
                 name: "script",
                 type: FieldType.String,
                 regex: /^([^\n\r]+(\r?\n)?)+$/,
-                value: this.runcmd
+                value: this.runcmd,
+                mandatory : true
             },{
                 name: "message final",
                 type: FieldType.String,
                 regex: /^[a-zA-Z0-9._-]$/,
-                value: this.runcmd
+                value: this.runcmd,
+                mandatory : true 
             }
         ]
     }

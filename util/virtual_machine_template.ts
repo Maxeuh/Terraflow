@@ -30,72 +30,86 @@ export class VirtualMachineTemplate extends TerraNode {
                 name: "VM name",
                 type: FieldType.String,
                 regex: /^[a-zA-Z0-9._-]$/,
-                value: this.name
+                value: this.name,
+                mandatory : true
             },{
                 name: "stop_on_destroy",
                 type: FieldType.CheckBox,
                 regex: /.*/,
-                value: this.stop_on_destroy
+                value: this.stop_on_destroy,
+                mandatory : false 
             }, {
                 name: "datastore id ",
                 type: FieldType.String,
                 regex: /.*/,
-                value: this.datastore_id
+                value: this.datastore_id,
+                mandatory : true 
             }, {
                 name: "file id",
                 type: FieldType.String,
                 regex: /.*/,
-                value: this.file_id
+                value: this.file_id,
+                mandatory : true 
             }, {
                 name: "interface",
                 type: FieldType.CheckBox,
                 regex: /.*/,
-                value: this.interface
+                value: this.interface,
+                mandatory : true 
             }, {
                 name: "iothread",
                 type: FieldType.CheckBox,
                 regex: /.*/,
-                value: this.iothread
+                value: this.iothread,
+                mandatory : true 
             }, {
                 name: "discard",
                 type: FieldType.CheckBox,
                 regex: /.*/,
-                value: this.discard
+                value: this.discard,
+                mandatory : false 
             },{
                 name: "disc size",
                 type: FieldType.Integer,
                 regex: /.*/,
-                value: this.disc_size
+                value: this.disc_size,
+                mandatory : false 
             },{
                 name: "content type",
                 type: FieldType.String,
                 regex: /.*/,
-                value: this.content_type
+                value: this.content_type,
+                mandatory : true
             }, {
                 name: "source name",
                 type: FieldType.String,
                 regex: /.*/,
-                value: this.source_name
+                value: this.source_name,
+                mandatory : true 
             }, {
                 name: "source datastore id",
                 type: FieldType.String,
                 regex: /.*/,
-                value: this.source_datastore_id
+                value: this.source_datastore_id,
+                mandatory : true 
             }, {
                 name: "source interface",
                 type: FieldType.String,
                 regex: /.*/,
-                value: this.interface
+                value: this.interface,
+                mandatory : true
             },{
                 name: "url source",
                 type: FieldType.String,
                 regex: /.*/,
-                value: this.url_source
+                value: this.url_source,
+                mandatory : true 
             },{
                 name: "source file name",
                 type: FieldType.String,
                 regex: /.*/,
-                value: this.source_file_name
+                value: this.source_file_name,
+                mandatory : true
             }
         ]
     }
