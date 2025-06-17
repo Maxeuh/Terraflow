@@ -42,7 +42,7 @@ export class VirtualMachine extends TerraNode {
     generateConfigNode(): string {
         return `resource "proxmox_virtual_environment_vm" "${this.name_resource}" {
   name      = "${this.name}"
-  node_name = "${this._hardware?.node_name}"
+  node_name = "${this._hardware?.getProxmox()?.node_name}"
 
   initialization {
     ip_config {
@@ -61,10 +61,10 @@ export class VirtualMachine extends TerraNode {
   disk {
     datastore_id = "${this._hardware?.datastore_id}"
     file_id      = ${this._hardware?.file_id}
-    interface    = "${this._hardware?.interfaces}"
+    interface    = "${this._hardware?.interface}"
     iothread     = ${this._hardware?.iothread}
     discard      = "${this._hardware?.discard}"
-    size         = ${this._hardware?.size}
+    size         = ${this._hardware?.disc_size}
   }
 
   network_device {
@@ -75,9 +75,9 @@ export class VirtualMachine extends TerraNode {
 resource "proxmox_virtual_environment_download_file" "${this.image_name}" {
   content_type = "${this._hardware?.content_type}"
   datastore_id = "${this._hardware?.datastore_id}"
-  node_name    = "${this._hardware?.prox.node_name}"
+  node_name    = "${this._hardware?.getProxmox()?.node_name}"
 
-  url = "${this._hardware?.url}"
+  url = "${this._hardware?.url_source}"
 }`
 
     }

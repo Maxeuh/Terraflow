@@ -116,6 +116,13 @@ export class VirtualMachineTemplate extends TerraNode {
     setProxmox(proxmox : ProxmoxProvider){
         this._proxmox = proxmox;
     }
+    getProxmox() : ProxmoxProvider | null  {
+        if(this._proxmox != null ) {
+            return this._proxmox
+        }
+        else{ 
+            return null };
+    }
 
 
 
