@@ -8,11 +8,15 @@ export class ProxmoxProvider extends TerraNode {
     public node_name: string = "";
 
     private host: string = "";
+    private apiToken: string = "";
     private port: number = 8006;
     private insecure: boolean = true;
     private username: string = "root@pam";
     private password: string = "";
     private _networks: Network[] = [];
+
+    private agent: boolean = false;
+    private sshPort: number = 22;
 
     constructor() {
         super();
@@ -38,6 +42,11 @@ export class ProxmoxProvider extends TerraNode {
                 type: FieldType.Integer,
                 regex: /.*/,
                 value: this.port
+            }, {
+                name: "sshPort",
+                type: FieldType.Integer,
+                regex: /.*/,
+                value: this.port
             }
         ]
     }
@@ -55,11 +64,23 @@ export class ProxmoxProvider extends TerraNode {
     generateConfigFileContent(): string {
         return `
 provider "proxmox" {
+  alias = "${this.node_name}"
   endpoint = "https://${this.host}:${this.port.toString()}/"
-
+  api_token = "${this.apiToken}"
   username = "${this.username}"
   password = "${this.password}"
   insecure = ${this.insecure}
+  
+  ssh {
+    agent = ${this.agent}
+    
+    node = {
+        name = "${this.node_name}"
+        address = "${this.host}"
+        port = ${this.sshPort.toString()}
+    }
+  }
+  
 }
         `;
     }
