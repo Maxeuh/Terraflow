@@ -26,33 +26,33 @@ export class ProxmoxProvider extends TerraNode {
                 type: FieldType.String,
                 regex: /^[a-zA-Z0-9._-]+@(pam|pve)$/,
                 value: this.insecure,
-                mandatory : true
-                
+                mandatory: true
+
             },
             {
                 name: "password",
                 type: FieldType.Password,
                 regex: /.*/,
                 value: this.password,
-                mandatory : true
+                mandatory: true
             }, {
                 name: "insecure",
                 type: FieldType.CheckBox,
                 regex: /.*/,
                 value: this.insecure,
-                mandatory : false
+                mandatory: false
             }, {
                 name: "port",
                 type: FieldType.Integer,
                 regex: /.*/,
                 value: this.port,
-                mandatory : true
+                mandatory: true
             }, {
                 name: "sshPort",
                 type: FieldType.Integer,
                 regex: /.*/,
-                value: this.port,
-                mandatory : true 
+                value: this.sshPort,
+                mandatory: true
             }
         ]
     }
@@ -80,7 +80,7 @@ provider "proxmox" {
   ssh {
     agent = ${this.agent}
     
-    node = {
+    node {
         name = "${this.node_name}"
         address = "${this.host}"
         port = ${this.sshPort.toString()}

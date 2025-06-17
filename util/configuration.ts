@@ -1,7 +1,7 @@
 import {TerraNode} from "@/util/types";
 import fs from "fs";
 
-class Configuration extends TerraNode {
+export class Configuration extends TerraNode {
     private nodes: TerraNode[] = [];
 
     public addNode(node: TerraNode) {
