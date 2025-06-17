@@ -6,10 +6,8 @@ import {ProxmoxProvider} from "@/util/proxmox";
 export class Network extends TerraNode {
 
     public name: string = "";
-    public img_network: string = "";
     public address: string = "0.0.0.0/24";
     public comment: string = "comment";
-    public name_resource_network: string = "";
     public proxmox: ProxmoxProvider | null = null;
     private machines: VirtualMachine[] = [];
 
@@ -45,18 +43,11 @@ export class Network extends TerraNode {
     }
 
     generateConfigNode(): string {
-        return `resource "${this.name_resource_network}" "${this.name}" {
-  depends_on = [
-    ${this.img_network}
-  ]
-
+        return `resource "proxmox_virtual_environment_network_linux_bridge" "${this.name}" {
   node_name = "${this.proxmox?.node_name}"
   name      = "${this.name}"
-
   address = "${this.address}"
-
   comment = "${this.comment}"
-
 }`
 
     }
