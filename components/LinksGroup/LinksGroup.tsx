@@ -16,24 +16,29 @@ interface LinksGroupProps {
     icon: React.FC<any>;
     label: string;
     initiallyOpened?: boolean;
-    links?: { label: string; link: string }[];
+    onClick?: () => void;
+    links?: { label: string; link?: string; onClick?: () => void }[];
+    forceChevron?: boolean;
 }
 
 export function LinksGroup({
     icon: Icon,
     label,
     initiallyOpened,
+    onClick,
     links,
+    forceChevron = false,
 }: LinksGroupProps) {
-    const hasLinks = Array.isArray(links);
+    const hasLinks = Array.isArray(links) || forceChevron;
     const [opened, setOpened] = useState(initiallyOpened || false);
-    const items = (hasLinks ? links : []).map((link) => (
+    const items = (hasLinks && links ? links : []).map((link) => (
         <Text<"a">
             component="a"
             className={classes.link}
             href={link.link}
             key={link.label}
             unstyled={true}
+            onClick={link.onClick}
         >
             {link.label}
         </Text>
@@ -42,7 +47,10 @@ export function LinksGroup({
     return (
         <>
             <UnstyledButton
-                onClick={() => setOpened((o) => !o)}
+                onClick={() => {
+                    setOpened((o) => !o);
+                    if (onClick) onClick();
+                }}
                 className={classes.control}
                 unstyled={true}
             >

@@ -1,8 +1,6 @@
 import { Header } from "@/components/Header/Header";
-import { Sidebar } from "@/components/Sidebar/Sidebar";
 import {
     ColorSchemeScript,
-    Flex,
     MantineColorsTuple,
     MantineProvider,
     createTheme,
@@ -132,10 +130,7 @@ export default function RootLayout({
             <body>
                 <MantineProvider defaultColorScheme="auto" theme={theme}>
                     <Header />
-                    <Flex flex={"row"} direction={"row"}>
-                        <Sidebar />
-                        {children}
-                    </Flex>
+                    {children}
                 </MantineProvider>
             </body>
         </html>
