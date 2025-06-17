@@ -1,17 +1,17 @@
 import {FieldType, TerraNode} from "@/util/types";
 import {Network} from "@/util/network";
 
+/**
+ * ProxmoxProvider class represents a Proxmox provider.
+ */
 export class ProxmoxProvider extends TerraNode {
-    /**
-     * Represent a Proxmox provider
-     */
-
+    public nodeName: string = "";
+    
     private host: string = "";
     private port: number = 8006;
     private insecure: boolean = true;
     private username: string = "root@pam";
     private password: string = "";
-    private nodeName: string = "";
     private _networks: Network[] = [];
 
     constructor() {
@@ -57,7 +57,7 @@ export class ProxmoxProvider extends TerraNode {
 provider "proxmox" {
   endpoint = "https://${this.host}:${this.port.toString()}/"
 
-  username = "${this.username}@pam"
+  username = "${this.username}"
   password = "${this.password}"
   insecure = ${this.insecure}
 }

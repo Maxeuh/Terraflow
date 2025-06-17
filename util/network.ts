@@ -5,7 +5,6 @@ import {ProxmoxProvider} from "@/util/proxmox";
 
 export class Network extends TerraNode {
 
-    public node_name: string = "";
     public name: string = "";
     public img_network: string = "";
     public address: string = "0.0.0.0/24";
@@ -51,7 +50,7 @@ export class Network extends TerraNode {
     ${this.img_network}
   ]
 
-  node_name = "${this.node_name}"
+  node_name = "${this.proxmox?.node_name}"
   name      = "${this.name}"
 
   address = "${this.address}"
