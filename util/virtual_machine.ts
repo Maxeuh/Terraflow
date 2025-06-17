@@ -23,12 +23,14 @@ export class VirtualMachine extends TerraNode {
                 name: "address",
                 type: FieldType.String,
                 regex: /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\/([0-9]|[12]\d|3[0-2])$/,
-                value: this.address
+                value: this.address,
+                mandatory: true,
             }, {
                 name: "gateway",
                 type: FieldType.String,
                 regex: /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\/([0-9]|[12]\d|3[0-2])$/,
-                value: this.gateway
+                value: this.gateway,
+                mandatory: true,
             }
         ]
     }
@@ -73,7 +75,7 @@ export class VirtualMachine extends TerraNode {
 resource "proxmox_virtual_environment_download_file" "${this.image_name}" {
   content_type = "${this._hardware?.content_type}"
   datastore_id = "${this._hardware?.datastore_id}"
-  node_name    = "${this._hardware?.node_name}"
+  node_name    = "${this._hardware?.prox.node_name}"
 
   url = "${this._hardware?.url}"
 }`
