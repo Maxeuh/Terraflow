@@ -1,4 +1,5 @@
 import {TerraNode} from "@/util/types";
+import fs from "fs";
 
 class Configuration extends TerraNode {
     private nodes: TerraNode[] = [];
@@ -26,5 +27,10 @@ terraform {
 
     getChildren(): TerraNode[] {
         return this.nodes;
+    }
+
+    createFile(fileName: string): void {
+        const content = this.generateConfigFileContent();
+        fs.writeFileSync(fileName, content);
     }
 }
