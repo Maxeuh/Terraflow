@@ -20,7 +20,7 @@ import {FieldType, TerraNode} from "@/util/types";
 
 
 
-class CloudInit extends TerraNode{
+export class CloudInit extends TerraNode {
 
     public hostname : string = "hostname";
     public userName : string = "user";
@@ -40,13 +40,13 @@ class CloudInit extends TerraNode{
             {
                 name: "hostname",
                 type: FieldType.String,
-                regex: /^[a-zA-Z0-9._-]+@(pam|pve)$/,
+                regex: /^[a-zA-Z0-9._-]$/,
                 value: this.hostname
             },
             {
                 name: "username",
                 type: FieldType.String,
-                regex: /^[a-zA-Z0-9._-]+@(pam|pve)$/,
+                regex: /^[a-zA-Z0-9._-]$/,
                 value: this.userName
             }, {
                 name: "sudo",
@@ -76,7 +76,7 @@ class CloudInit extends TerraNode{
             },{
                 name: "message final",
                 type: FieldType.String,
-                regex: /^[a-zA-Z0-9._-]+@(pam|pve)$/,
+                regex: /^[a-zA-Z0-9._-]$/,
                 value: this.runcmd
             }
         ]
@@ -116,7 +116,7 @@ class CloudInit extends TerraNode{
     }
 
 
-    generateConfigFileContent(): string {
+    generateConfigNode(): string {
         let file_content  = `hostname: "${this.hostname}"
         
 manage_etc_hosts : true 
@@ -130,7 +130,7 @@ users :
     - name: ${this.userName}
      sudo : ${this.userSudo}
      shell: ${this.userShell}
-        
+         
 package_update : ${this.package_update}
 `;
         const packagestab = this.packages.split(",");
