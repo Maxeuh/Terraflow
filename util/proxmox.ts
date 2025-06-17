@@ -5,8 +5,8 @@ import {Network} from "@/util/network";
  * ProxmoxProvider class represents a Proxmox provider.
  */
 export class ProxmoxProvider extends TerraNode {
-    public nodeName: string = "";
-    
+    public node_name: string = "";
+
     private host: string = "";
     private port: number = 8006;
     private insecure: boolean = true;
