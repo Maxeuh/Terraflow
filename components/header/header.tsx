@@ -1,11 +1,11 @@
 "use client";
 
-import { Burger, Center, Container, Group, Menu, Text } from "@mantine/core";
+import { Burger, Center, Group, Menu, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Image from "next/image";
 import Link from "next/link";
 import { FaChevronDown } from "react-icons/fa";
-import classes from "./header.module.css";
+import classes from "./Header.module.css";
 
 const links = [
     { link: "/about", label: "Features" },
@@ -63,30 +63,29 @@ export function Header() {
 
     return (
         <header className={classes.header}>
-            <Container size="md">
-                <div className={classes.inner}>
-                    <Link href="/" className={classes.logo}>
-                        <Image
-                            width={28}
-                            height={28}
-                            src="/logo.png"
-                            alt="Terraflow Logo"
-                        />
-                        <Text size="xl" fw={700}>
-                            Terraflow
-                        </Text>
-                    </Link>
-                    <Group gap={5} visibleFrom="sm">
-                        {items}
-                    </Group>
-                    <Burger
-                        opened={opened}
-                        onClick={toggle}
-                        size="sm"
-                        hiddenFrom="sm"
+            <div className={classes.inner}>
+                <Link href="/" className={classes.logo}>
+                    <Image
+                        width={28}
+                        height={28}
+                        src="/logo.png"
+                        alt="Terraflow Logo"
                     />
-                </div>
-            </Container>
+                    <Text size="xl" fw={700}>
+                        Terraflow
+                    </Text>
+                </Link>
+                <Group gap={5} visibleFrom="sm">
+                    {items}
+                </Group>
+                {opened && <div className={classes.mobileNav}>{items}</div>}
+                <Burger
+                    opened={opened}
+                    onClick={toggle}
+                    size="sm"
+                    hiddenFrom="sm"
+                />
+            </div>
         </header>
     );
 }

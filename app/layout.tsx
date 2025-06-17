@@ -1,12 +1,13 @@
-import { Header } from "@/components/header/header";
+import { Header } from "@/components/header/Header";
+import { Sidebar } from "@/components/sidebar/Sidebar";
 import {
     ColorSchemeScript,
+    Flex,
     MantineColorsTuple,
     MantineProvider,
     createTheme,
     mantineHtmlProps,
 } from "@mantine/core";
-import "@mantine/core/styles.css";
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -131,7 +132,10 @@ export default function RootLayout({
             <body>
                 <MantineProvider defaultColorScheme="auto" theme={theme}>
                     <Header />
-                    {children}
+                    <Flex flex={"row"} direction={"row"}>
+                        <Sidebar />
+                        {children}
+                    </Flex>
                 </MantineProvider>
             </body>
         </html>
