@@ -1,14 +1,12 @@
 "use client";
 
-import { LinksGroup } from "@/components/linksgroup/LinksGroup";
+import { LinksGroup } from "@/components/LinksGroup/LinksGroup";
 import { ScrollArea } from "@mantine/core";
-import { PiComputerTowerBold, PiNetwork } from "react-icons/pi";
+import { PiComputerTowerBold, PiNetwork, PiPlusBold } from "react-icons/pi";
 import { SiProxmox } from "react-icons/si";
-import { TbDashboard } from "react-icons/tb";
 import classes from "./Sidebar.module.css";
 
 const mockdata = [
-    { label: "Dashboard", icon: TbDashboard },
     {
         label: "Proxmox",
         icon: SiProxmox,
@@ -37,6 +35,7 @@ export function Sidebar() {
     return (
         <nav className={classes.navbar}>
             <ScrollArea className={classes.links}>
+                <LinksGroup key="New" label="New" icon={PiPlusBold} />
                 <div>{links}</div>
             </ScrollArea>
         </nav>
