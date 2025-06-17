@@ -37,7 +37,7 @@ export function Sidebar() {
     return (
         <nav className={classes.navbar}>
             <ScrollArea className={classes.links}>
-                <div className={classes.linksInner}>{links}</div>
+                <div>{links}</div>
             </ScrollArea>
         </nav>
     );
