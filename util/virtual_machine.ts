@@ -1,6 +1,5 @@
 import {FieldType, TerraNode} from "@/util/types";
 import {VirtualMachineTemplate} from "@/util/virtual_machine_template";
-import * as fs from "fs";
 import {Network} from "@/util/network";
 
 
@@ -61,7 +60,7 @@ export class VirtualMachine extends TerraNode {
   disk {
     datastore_id = "${this._hardware?.datastore_id}"
     file_id      = ${this._hardware?.file_id}
-    interface    = "${this._hardware?.interface}"
+    interface    = "${this._hardware?.diskInterface}"
     iothread     = ${this._hardware?.iothread}
     discard      = "${this._hardware?.discard}"
     size         = ${this._hardware?.disc_size}
@@ -73,18 +72,14 @@ export class VirtualMachine extends TerraNode {
 }
   
 resource "proxmox_virtual_environment_download_file" "${this.image_name}" {
-  content_type = "${this._hardware?.content_type}"
+  content_type = "${this._hardware?.contentType}"
   datastore_id = "${this._hardware?.datastore_id}"
   node_name    = "${this._hardware?.getProxmox()?.node_name}"
 
-  url = "${this._hardware?.url_source}"
+  url = "${this._hardware?.sourceURL}"
 }`
 
     }
 
-    writeConfigFile(fileName: string) {
-        const content = this.generateConfigFileContent();
-        fs.writeFileSync(fileName, content);
-    }
 }
 

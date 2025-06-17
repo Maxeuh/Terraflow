@@ -1,6 +1,5 @@
 import {FieldType, TerraNode} from "@/util/types";
 import {VirtualMachine} from "@/util/virtual_machine"; // Adjust the import path as necessary
-import * as fs from "fs";
 import {ProxmoxProvider} from "@/util/proxmox";
 
 export class Network extends TerraNode {
@@ -51,11 +50,6 @@ export class Network extends TerraNode {
   comment = "${this.comment}"
 }`
 
-    }
-
-    writeConfigFile(fileName: string) {
-        const content = this.generateConfigFileContent();
-        fs.writeFileSync(fileName, content);
     }
 
     getChildren(): TerraNode[] {
