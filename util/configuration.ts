@@ -1,5 +1,4 @@
 import {TerraNode} from "@/util/types";
-import fs from "fs";
 import {VirtualMachineTemplate} from "@/util/virtual_machine_template";
 import {ProxmoxProvider} from "@/util/proxmox";
 
@@ -46,7 +45,6 @@ terraform {
     }
 
     createFile(fileName: string): void {
-        const content = this.generateConfigFileContent();
-        fs.writeFileSync(fileName, content);
+        // TODO
     }
 }
