@@ -76,6 +76,8 @@ export abstract class TerraNode {
                     fieldType = FieldType.String;
                 } else if (attrType === "number") {
                     fieldType = FieldType.Float;
+                } else if (attrType === "boolean") {
+                    fieldType = FieldType.CheckBox;
                 }
                 fields.push({
                     name: key,
