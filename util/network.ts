@@ -9,8 +9,8 @@ export class Network extends TerraNode {
     public _proxmox: ProxmoxProvider | null = null;
     public _machines: VirtualMachine[] = [];
 
-    constructor(name: string) {
-        super(name);
+    constructor() {
+        super();
         this._varTypes = [
             {
                 name: "address",

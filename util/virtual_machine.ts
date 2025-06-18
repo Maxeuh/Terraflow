@@ -14,8 +14,8 @@ export class VirtualMachine extends TerraNode {
     public _network: Network | null = null;
     public name_resource: string = `test`;
 
-    constructor(name: string) {
-        super(name);
+    constructor() {
+        super();
         this._varTypes = [
             {
                 name: "address",

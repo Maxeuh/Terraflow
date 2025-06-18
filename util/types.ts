@@ -22,11 +22,10 @@ export type FormField = {
 export abstract class TerraNode {
     protected _varTypes: FormField[] = [];
 
-    public name: string;
+    public name: string = "";
     private readonly _UUID: string;
 
-    constructor(name: string) {
-        this.name = name;
+    constructor() {
         this._UUID = uuidv4();
     }
 

@@ -8,10 +8,6 @@ export class Configuration extends TerraNode {
 
     templates: VirtualMachineTemplate[] = [];
 
-    constructor(name: string) {
-        super(name);
-    }
-
     public addProvider(node: ProxmoxProvider) {
         this.providers.push(node);
     }
