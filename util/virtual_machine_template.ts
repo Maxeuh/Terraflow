@@ -3,7 +3,6 @@ import { ProxmoxProvider } from "./proxmox";
 
 
 export class VirtualMachineTemplate extends TerraNode {
-    public name : string = "default_vm";
     public description: string = "";
 
     // VM configuration
@@ -24,8 +23,8 @@ export class VirtualMachineTemplate extends TerraNode {
 
     private _proxmox : ProxmoxProvider | null = null;
 
-    constructor() {
-        super();
+    constructor(name: string) {
+        super(name);
         this._varTypes = [
             {
                 name: "name",

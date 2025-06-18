@@ -5,7 +5,6 @@ import {Network} from "@/util/network";
 
 export class VirtualMachine extends TerraNode {
 
-    public name: string = "";
     public username: string = "root";
     public keys: string = "";
     public address: string = "0.0.0.0/24";
@@ -15,8 +14,8 @@ export class VirtualMachine extends TerraNode {
     public _network: Network | null = null;
     public name_resource: string = `test`;
 
-    constructor() {
-        super();
+    constructor(name: string) {
+        super(name);
         this._varTypes = [
             {
                 name: "address",

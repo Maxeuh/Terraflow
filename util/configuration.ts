@@ -4,6 +4,10 @@ import fs from "fs";
 export class Configuration extends TerraNode {
     private nodes: TerraNode[] = [];
 
+    constructor(name: string) {
+        super(name);
+    }
+
     public addNode(node: TerraNode) {
         this.nodes.push(node);
     }

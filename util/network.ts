@@ -4,14 +4,13 @@ import {ProxmoxProvider} from "@/util/proxmox";
 
 export class Network extends TerraNode {
 
-    public name: string = "";
     public address: string = "0.0.0.0/24";
     public comment: string = "comment";
     public _proxmox: ProxmoxProvider | null = null;
     private _machines: VirtualMachine[] = [];
 
-    constructor() {
-        super();
+    constructor(name: string) {
+        super(name);
         this._varTypes = [
             {
                 name: "address",

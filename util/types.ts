@@ -20,6 +20,12 @@ export type FormField = {
 export abstract class TerraNode {
     protected _varTypes: FormField[] = [];
 
+    public name: string;
+
+    constructor(name: string) {
+        this.name = name;
+    }
+
     /**
      * This method returns the form fields of the node
      * @returns {FormField[]} an array of FormField objects

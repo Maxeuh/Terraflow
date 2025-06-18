@@ -18,8 +18,8 @@ export class ProxmoxProvider extends TerraNode {
     private agent: boolean = false;
     private sshPort: number = 22;
 
-    constructor() {
-        super();
+    constructor(name: string) {
+        super(name);
         this._varTypes = [
             {
                 name: "username",

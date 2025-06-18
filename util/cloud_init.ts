@@ -34,8 +34,8 @@ export class CloudInit extends TerraNode {
 
 
 
-    constructor(){
-        super();
+    constructor(name: string){
+        super(name);
         this._varTypes = [
             {
                 name: "hostname",
