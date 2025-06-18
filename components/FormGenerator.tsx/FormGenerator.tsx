@@ -1,5 +1,5 @@
 import { FieldType, FormField } from "@/util/types";
-import { Checkbox, NumberInput, PasswordInput, TextInput } from "@mantine/core";
+import { NumberInput, PasswordInput, Switch, TextInput } from "@mantine/core";
 
 interface FormGeneratorProps {
     forms: FormField[];
@@ -9,10 +9,12 @@ interface FormGeneratorProps {
 export default function FormGenerator({ forms, onChange }: FormGeneratorProps) {
     return forms.map((form, index) => (
         <div key={index} className="form-field">
-            <label htmlFor={form.name}>
-                {form.name}{" "}
-                {form.mandatory && <span style={{ color: "red" }}>*</span>}
-            </label>
+            {form.type !== FieldType.CheckBox && (
+                <label htmlFor={form.name}>
+                    {form.name}{" "}
+                    {form.mandatory && <span style={{ color: "red" }}>*</span>}
+                </label>
+            )}
             {form.type === FieldType.String && (
                 <TextInput
                     id={form.name}
@@ -61,15 +63,22 @@ export default function FormGenerator({ forms, onChange }: FormGeneratorProps) {
                 />
             )}
             {form.type === FieldType.CheckBox && (
-                <Checkbox
+                <Switch
                     id={form.name}
-                    defaultValue={form.value}
-                    checked={Boolean(form.value)}
+                    defaultChecked={Boolean(form.value)}
                     onChange={(e) => {
                         form.value = e.target.checked;
                         onChange && onChange([...forms]);
                     }}
                     required={form.mandatory}
+                    label={
+                        form.name +
+                        (form.mandatory ? (
+                            <span style={{ color: "red" }}>*</span>
+                        ) : (
+                            ""
+                        ))
+                    }
                 />
             )}
         </div>

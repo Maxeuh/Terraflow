@@ -1,6 +1,6 @@
-import {FieldType, TerraNode} from "@/util/types";
+import { Configuration } from "@/util/configuration";
+import { FieldType, TerraNode } from "@/util/types";
 import { ProxmoxProvider } from "./proxmox";
-import {Configuration} from "@/util/configuration";
 
 
 export class VirtualMachineTemplate extends TerraNode {
@@ -29,7 +29,7 @@ export class VirtualMachineTemplate extends TerraNode {
             {
                 name: "name",
                 type: FieldType.String,
-                regex: /^[a-zA-Z0-9._-]$/,
+                regex: /^[a-zA-Z0-9.-]+$/,
                 value: this.name,
                 mandatory : true
             }
@@ -37,16 +37,15 @@ export class VirtualMachineTemplate extends TerraNode {
     }
 
     setConfiguration(configuration: Configuration) {
+        if (this._configuration) {
+            this._configuration.removeTemplate(this);
+        }
         this._configuration = configuration;
-
-        this._configuration.templates.push(this);
     }
-
 
     getResourceName(): string {
         return this.name;
     }
-
 
     generateConfigNode(): string {
         let content: string = "";

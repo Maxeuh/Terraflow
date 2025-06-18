@@ -1,6 +1,6 @@
-import {TerraNode} from "@/util/types";
-import {VirtualMachineTemplate} from "@/util/virtual_machine_template";
-import {ProxmoxProvider} from "@/util/proxmox";
+import { ProxmoxProvider } from "@/util/proxmox";
+import { TerraNode } from "@/util/types";
+import { VirtualMachineTemplate } from "@/util/virtual_machine_template";
 
 export class Configuration extends TerraNode {
     public providers: ProxmoxProvider[] = [];

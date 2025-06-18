@@ -1,19 +1,24 @@
 "use client";
 
+import { CreateModal } from "@/components/CreateModal/CreateModal";
 import { LinksGroup } from "@/components/LinksGroup/LinksGroup";
+import { VirtualMachineTemplate } from "@/util/virtual_machine_template";
 import { ScrollArea } from "@mantine/core";
 import { Edge, Node, useReactFlow } from "@xyflow/react";
 import { useState } from "react";
 import { PiComputerTowerBold, PiNetwork, PiPlusBold } from "react-icons/pi";
 import { SiProxmox } from "react-icons/si";
-import CreateModal from "../CreateModal/CreateModal";
 import classes from "./Sidebar.module.css";
 
 interface SidebarProps {
     onOpenVMTemplateDrawer: () => void;
+    vmTemplates?: VirtualMachineTemplate[];
 }
 
-export function Sidebar({ onOpenVMTemplateDrawer }: SidebarProps) {
+export function Sidebar({
+    onOpenVMTemplateDrawer,
+    vmTemplates = [],
+}: SidebarProps) {
     const [modalOpened, setModalOpened] = useState(false);
     const [modalType, setModalType] = useState("");
 
@@ -38,6 +43,13 @@ export function Sidebar({ onOpenVMTemplateDrawer }: SidebarProps) {
         flowInstance.addNodes(newNode);
         flowInstance.fitView();
     };
+
+    const vmTemplateLinks = vmTemplates.map((template) => ({
+        label: template.name,
+        onClick: () => {
+            openModal(`"${template.name}" VM`);
+        },
+    }));
 
     return (
         <nav className={classes.navbar}>
@@ -66,6 +78,7 @@ export function Sidebar({ onOpenVMTemplateDrawer }: SidebarProps) {
                     icon={PiComputerTowerBold}
                     initiallyOpened={true}
                     forceChevron={true}
+                    links={vmTemplateLinks}
                 />
             </ScrollArea>
             <CreateModal

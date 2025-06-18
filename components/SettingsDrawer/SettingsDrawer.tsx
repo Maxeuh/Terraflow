@@ -11,7 +11,7 @@ interface SettingsDrawerProps {
     forms: FormField[];
 }
 
-export default function SettingsDrawer({
+export function SettingsDrawer({
     opened,
     onClose,
     onSubmit,

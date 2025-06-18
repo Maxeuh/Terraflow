@@ -1,8 +1,11 @@
 "use client";
 
-import SettingsDrawer from "@/components/SettingsDrawer/SettingsDrawer";
+import { SettingsDrawer } from "@/components/SettingsDrawer/SettingsDrawer";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
-import { FieldType, FormField } from "@/util/types";
+import { Configuration } from "@/util/configuration";
+import { FormField } from "@/util/types";
+import { VirtualMachineTemplate } from "@/util/virtual_machine_template";
+import { VMService } from "@/util/virtual_machine_template_service";
 import { Flex } from "@mantine/core";
 import {
     Background,
@@ -14,7 +17,7 @@ import {
     useNodesState,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function Home() {
     const [nodes, setNodes, onNodesChange] = useNodesState<any>([]);
@@ -24,46 +27,75 @@ export default function Home() {
     const [drawerType, setDrawerType] = useState("");
     const [formFields, setFormFields] = useState<FormField[]>([]);
 
-    const openDrawer = (title: string, forms: FormField[]) => {
+    const config = new Configuration();
+    const vmServiceRef = useRef(new VMService(config));
+    const [vmTemplates, setVmTemplates] = useState<VirtualMachineTemplate[]>(
+        []
+    );
+    const [currentTemplate, setCurrentTemplate] =
+        useState<VirtualMachineTemplate | null>(null);
+
+    useEffect(() => {
+        const vmService = vmServiceRef.current;
+
+        const handleTemplatesUpdated = (
+            templates: VirtualMachineTemplate[]
+        ) => {
+            setVmTemplates(templates);
+            console.log("VM Templates updated:", templates);
+        };
+
+        vmService.on("templates-updated", handleTemplatesUpdated);
+
+        setVmTemplates(vmService.getAllVMTemplates());
+
+        return () => {
+            vmService.removeListener(
+                "templates-updated",
+                handleTemplatesUpdated
+            );
+        };
+    }, []);
+
+    const openDrawer = useCallback((title: string, forms: FormField[]) => {
         setDrawerType(title);
         setFormFields(forms);
         setDrawerOpened(true);
-    };
+    }, []);
 
-    const openVMTemplateDrawer = () => {
-        const emptyForm: FormField[] = [
-            {
-                name: "name",
-                value: "",
-                type: FieldType.String,
-                regex: /^.+$/,
-                mandatory: true,
-            },
-            {
-                name: "ip",
-                value: "",
-                type: FieldType.String,
-                regex: /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/,
-                mandatory: false,
-            },
-        ];
-        openDrawer("VM Template (Test)", emptyForm);
-    };
+    const openVMTemplateDrawer = useCallback(() => {
+        const template = vmServiceRef.current.createVMTemplate();
+        setCurrentTemplate(template);
+        openDrawer("Create VM Template", template.getFormFields());
+    }, [openDrawer]);
 
-    const closeDrawer = () => {
+    const closeDrawer = useCallback(() => {
         setDrawerOpened(false);
+        setCurrentTemplate(null);
         console.log(`Drawer closed for ${drawerType}`);
-    };
+    }, [drawerType]);
 
-    const handleDrawerSubmit = (updatedFields: FormField[]) => {
-        setDrawerOpened(false);
-        console.log(`Form submitted for ${drawerType}:`, updatedFields);
-    };
+    const handleDrawerSubmit = useCallback(
+        (updatedFields: FormField[]) => {
+            if (currentTemplate) {
+                vmServiceRef.current.addVMTemplate(
+                    currentTemplate,
+                    updatedFields
+                );
+            }
+            setDrawerOpened(false);
+            setCurrentTemplate(null);
+        },
+        [currentTemplate]
+    );
 
     return (
         <ReactFlowProvider>
             <Flex flex={"row"} direction={"row"}>
-                <Sidebar onOpenVMTemplateDrawer={openVMTemplateDrawer} />
+                <Sidebar
+                    onOpenVMTemplateDrawer={openVMTemplateDrawer}
+                    vmTemplates={vmTemplates}
+                />
                 <SettingsDrawer
                     opened={drawerOpened}
                     onClose={closeDrawer}

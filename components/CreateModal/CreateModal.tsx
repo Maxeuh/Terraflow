@@ -8,7 +8,7 @@ interface CreateModalProps {
     type: string;
 }
 
-export default function CreateModal({
+export function CreateModal({
     opened,
     onClose,
     onSubmit,
