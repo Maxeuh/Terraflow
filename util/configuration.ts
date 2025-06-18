@@ -1,8 +1,11 @@
 import {TerraNode} from "@/util/types";
 import fs from "fs";
+import {VirtualMachineTemplate} from "@/util/virtual_machine_template";
 
 export class Configuration extends TerraNode {
     private providers: TerraNode[] = [];
+
+    private templates: VirtualMachineTemplate[] = [];
 
     constructor(name: string) {
         super(name);
@@ -14,6 +17,14 @@ export class Configuration extends TerraNode {
 
     public removeProvider(node: TerraNode) {
         this.providers = this.providers.filter(n => n !== node);
+    }
+
+    public addTemplate(template: VirtualMachineTemplate) {
+        this.templates.push(template);
+    }
+
+    public removeTemplate(template: VirtualMachineTemplate) {
+        this.templates = this.templates.filter(t => t !== template);
     }
 
     generateConfigNode(): string {
