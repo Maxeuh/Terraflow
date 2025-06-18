@@ -21,6 +21,7 @@ export class Configuration extends TerraNode {
 
     public addTemplate(template: VirtualMachineTemplate) {
         this.templates.push(template);
+        template._configuration = this;
     }
 
     public removeTemplate(template: VirtualMachineTemplate) {
