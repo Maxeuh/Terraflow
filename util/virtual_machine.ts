@@ -47,6 +47,7 @@ export class VirtualMachine extends TerraNode {
 
     generateConfigNode(): string {
         return `resource "proxmox_virtual_environment_vm" "${this.name_resource}" {
+  provider = ${this._network?._proxmox?.getProviderName()}
   name      = "${this.name}"
   node_name = "${this._hardware?.getProxmox()?.node_name}"
 

@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 // This is the type of each field in the form
 export enum FieldType {
     String,
@@ -21,9 +23,30 @@ export abstract class TerraNode {
     protected _varTypes: FormField[] = [];
 
     public name: string;
+    private readonly _UUID: string;
 
     constructor(name: string) {
         this.name = name;
+        this._UUID = uuidv4();
+    }
+
+    getUUID(): string {
+        return "proxmox-" + this._UUID;
+    }
+
+    toKebabCase(input: string): string {
+        return input
+            .normalize("NFD")                     // Sépare les accents des lettres (é → e + ́)
+            .replace(/[\u0300-\u036f]/g, "")     // Supprime les accents
+            .replace(/[^a-zA-Z0-9]+/g, '-')      // Remplace les séparateurs non alphanumériques par des tirets
+            .replace(/([a-z])([A-Z])/g, '$1-$2') // Ajoute un tiret entre camelCase
+            .toLowerCase()                       // Minuscule
+            .replace(/^-+|-+$/g, '')             // Supprime les tirets en début/fin
+            .replace(/--+/g, '-');               // Remplace les doubles tirets
+    }
+
+    getNodeID(): string {
+        return this.getUUID() + "-" + this.toKebabCase(this.name);
     }
 
     /**

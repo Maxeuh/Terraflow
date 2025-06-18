@@ -57,6 +57,10 @@ export class ProxmoxProvider extends TerraNode {
         ]
     }
 
+    getNodeID(): string {
+        return super.getUUID() + "-" + this.toKebabCase(this.host);
+    }
+
     addNetwork(network: Network): void {
         this._networks.push(network);
         network._proxmox = this;
@@ -70,7 +74,7 @@ export class ProxmoxProvider extends TerraNode {
     generateConfigNode(): string {
         return `
 provider "proxmox" {
-  alias = "${this.node_name}"
+  alias = "${this.getNodeID()}"
   endpoint = "https://${this.host}:${this.port.toString()}/"
   api_token = "${this.apiToken}"
   username = "${this.username}"
@@ -89,6 +93,10 @@ provider "proxmox" {
   
 }
         `;
+    }
+
+    getProviderName(): string {
+        return `proxmox.${this.getNodeID()}`;
     }
 
     getChildren(): TerraNode[] {

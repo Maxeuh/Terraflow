@@ -51,6 +51,7 @@ export class Network extends TerraNode {
 
     generateConfigNode(): string {
         return `resource "proxmox_virtual_environment_network_linux_bridge" "${this.name}" {
+  provider = ${this._proxmox?.getProviderName()}
   node_name = "${this._proxmox?.node_name}"
   name      = "${this.name}"
   address = "${this.address}"
