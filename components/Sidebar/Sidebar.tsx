@@ -43,7 +43,7 @@ export function Sidebar({
         const newNode: Node = {
             id: `node-${Date.now()}`,
             position: { x: 0, y: 0 },
-            data: { label: object.name },
+            data: { object },
             type: object.getNodeType(),
         };
         flowInstance.addNodes(newNode);
