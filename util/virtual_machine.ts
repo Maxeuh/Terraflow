@@ -14,8 +14,9 @@ export class VirtualMachine extends TerraNode {
     public _network: Network | null = null;
     public name_resource: string = `test`;
 
-    constructor() {
+    constructor(template: VirtualMachineTemplate) {
         super();
+        this._hardware = template;
         this._varTypes = [
             {
                 name: "address",
@@ -51,8 +52,11 @@ export class VirtualMachine extends TerraNode {
   name      = "${this.name}"
   node_name = "${this._network?._proxmox?.node_name}"
 
+  depends_on = [
+    proxmox_virtual_environment_vm.${this._hardware?.getNodeID()}
+  ]
   clone {
-    vm_id = proxmox_virtual_environment_vm.${this._hardware?.getResourceName()}.id
+    vm_id = proxmox_virtual_environment_vm.${this._hardware?.getNodeID()}.id
   }
   
   initialization {
@@ -65,7 +69,7 @@ export class VirtualMachine extends TerraNode {
 
     user_account {
       username = "${this.username}"
-      keys     = ${this.keys}
+      # keys     = ${this.keys}
     }
   }
 
