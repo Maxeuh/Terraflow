@@ -1,6 +1,6 @@
 import FormGenerator from "@/components/FormGenerator.tsx/FormGenerator";
 import { FormField } from "@/util/types";
-import { Button, Drawer, Group, Text } from "@mantine/core";
+import { Button, Drawer, Flex, Group, Text } from "@mantine/core";
 import { useCallback, useEffect, useState } from "react";
 
 interface SettingsDrawerProps {
@@ -23,6 +23,17 @@ export function SettingsDrawer({
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const trySubmit = (forms: FormField[]) => {
+        const nameField = forms.find(
+            (form) => form.name.toLowerCase() === "name"
+        );
+        if (nameField && !nameField.value) {
+            alert('The "name" field is mandatory and cannot be empty.');
+            return {
+                isValid: false,
+                errorMessages: ["Name field is mandatory"],
+            };
+        }
+
         if (
             !isFormValid &&
             !confirm(
@@ -93,7 +104,9 @@ export function SettingsDrawer({
                 blur: 3,
             }}
         >
-            <FormGenerator forms={forms} onChange={handleFormChange} />
+            <Flex direction="column" gap="md">
+                <FormGenerator forms={forms} onChange={handleFormChange} />
+            </Flex>
             {errorMessages.length > 0 && (
                 <div style={{ color: "red", marginTop: "10px" }}>
                     {errorMessages.map((msg, i) => (

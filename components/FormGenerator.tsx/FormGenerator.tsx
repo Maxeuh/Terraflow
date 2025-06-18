@@ -1,5 +1,6 @@
 import { FieldType, FormField } from "@/util/types";
 import { NumberInput, PasswordInput, Switch, TextInput } from "@mantine/core";
+import { Md123, MdAbc, MdPassword } from "react-icons/md";
 
 interface FormGeneratorProps {
     forms: FormField[];
@@ -17,6 +18,8 @@ export default function FormGenerator({ forms, onChange }: FormGeneratorProps) {
             )}
             {form.type === FieldType.String && (
                 <TextInput
+                    variant="default"
+                    leftSection={<MdAbc />}
                     id={form.name}
                     defaultValue={form.value}
                     onChange={(e) => {
@@ -29,6 +32,8 @@ export default function FormGenerator({ forms, onChange }: FormGeneratorProps) {
             )}
             {form.type === FieldType.Integer && (
                 <NumberInput
+                    variant="default"
+                    leftSection={<Md123 />}
                     id={form.name}
                     defaultValue={form.value}
                     onChange={(value) => {
@@ -40,6 +45,8 @@ export default function FormGenerator({ forms, onChange }: FormGeneratorProps) {
             )}
             {form.type === FieldType.Float && (
                 <NumberInput
+                    variant="default"
+                    leftSection={<Md123 />}
                     id={form.name}
                     defaultValue={form.value}
                     decimalScale={2}
@@ -53,6 +60,8 @@ export default function FormGenerator({ forms, onChange }: FormGeneratorProps) {
             )}
             {form.type === FieldType.Password && (
                 <PasswordInput
+                    variant="default"
+                    leftSection={<MdPassword />}
                     id={form.name}
                     defaultValue={form.value}
                     onChange={(e) => {
