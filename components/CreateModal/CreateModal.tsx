@@ -1,25 +1,27 @@
+import { TerraNode } from "@/util/types";
 import { Button, Group, Modal, TextInput } from "@mantine/core";
 import { useCallback, useEffect, useState } from "react";
 
 interface CreateModalProps {
     opened: boolean;
     onClose: () => void;
-    onSubmit: (name: string, openSettings: boolean) => void;
-    type: string;
+    onSubmit: (object: TerraNode, openSettings: boolean) => void;
+    object: TerraNode;
 }
 
 export function CreateModal({
     opened,
     onClose,
     onSubmit,
-    type,
+    object,
 }: CreateModalProps) {
     const [name, setName] = useState("");
 
     const handleSubmit = useCallback(
         (openSettings: boolean) => {
             if (name.trim()) {
-                onSubmit(name, openSettings);
+                object.name = name.trim();
+                onSubmit(object, openSettings);
                 setName("");
                 onClose();
             }
@@ -42,7 +44,7 @@ export function CreateModal({
         <Modal
             opened={opened}
             onClose={onClose}
-            title={`Create ${type}`}
+            title={`Create ${object.getNodeType()}`}
             overlayProps={{
                 backgroundOpacity: 0.55,
                 blur: 3,
@@ -50,7 +52,7 @@ export function CreateModal({
         >
             <TextInput
                 label="Name"
-                placeholder={`Enter the name for ${type}`}
+                placeholder={`Enter the name for ${object.getNodeType()}`}
                 value={name}
                 onChange={(event) => setName(event.currentTarget.value)}
                 onKeyDown={(event) => {

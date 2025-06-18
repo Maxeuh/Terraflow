@@ -1,6 +1,6 @@
-import {FieldType, TerraNode} from "@/util/types";
-import {VirtualMachineTemplate} from "@/util/virtual_machine_template";
-import {Network} from "@/util/network";
+import { Network } from "@/util/network";
+import { FieldType, TerraNode } from "@/util/types";
+import { VirtualMachineTemplate } from "@/util/virtual_machine_template";
 
 
 export class VirtualMachine extends TerraNode {
@@ -15,7 +15,7 @@ export class VirtualMachine extends TerraNode {
     public name_resource: string = `test`;
 
     constructor(template: VirtualMachineTemplate) {
-        super();
+        super("Virtual Machine");
         this._hardware = template;
         this._varTypes = [
             {

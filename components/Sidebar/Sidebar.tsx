@@ -2,6 +2,9 @@
 
 import { CreateModal } from "@/components/CreateModal/CreateModal";
 import { LinksGroup } from "@/components/LinksGroup/LinksGroup";
+import { Network } from "@/util/network";
+import { ProxmoxProvider } from "@/util/proxmox";
+import { TerraNode } from "@/util/types";
 import { VirtualMachineTemplate } from "@/util/virtual_machine_template";
 import { ScrollArea } from "@mantine/core";
 import { Edge, Node, useReactFlow } from "@xyflow/react";
@@ -20,12 +23,12 @@ export function Sidebar({
     vmTemplates = [],
 }: SidebarProps) {
     const [modalOpened, setModalOpened] = useState(false);
-    const [modalType, setModalType] = useState("");
+    const [modalType, setModalType] = useState<TerraNode>();
 
     const flowInstance = useReactFlow<Node, Edge>();
 
-    const openModal = (type: string) => {
-        setModalType(type);
+    const openModal = (object: TerraNode) => {
+        setModalType(object);
         setModalOpened(true);
     };
 
@@ -33,12 +36,13 @@ export function Sidebar({
         setModalOpened(false);
     };
 
-    const handleSubmit = (name: string, openSettings: boolean) => {
+    const handleSubmit = (object: TerraNode, openSettings: boolean) => {
         closeModal();
+        console.log("Submitted object:", object);
         const newNode: Node = {
             id: `node-${Date.now()}`,
             position: { x: 0, y: 0 },
-            data: { label: name },
+            data: { label: object.name },
         };
         flowInstance.addNodes(newNode);
         flowInstance.fitView();
@@ -47,7 +51,7 @@ export function Sidebar({
     const vmTemplateLinks = vmTemplates.map((template) => ({
         label: template.name,
         onClick: () => {
-            openModal(`"${template.name}" VM`);
+            openModal(template);
         },
     }));
 
@@ -58,13 +62,13 @@ export function Sidebar({
                     key="Proxmox"
                     label="Proxmox"
                     icon={SiProxmox}
-                    onClick={() => openModal("Proxmox")}
+                    onClick={() => openModal(new ProxmoxProvider())}
                 />
                 <LinksGroup
                     key="Network"
                     label="Network"
                     icon={PiNetwork}
-                    onClick={() => openModal("Network")}
+                    onClick={() => openModal(new Network())}
                 />
                 <LinksGroup
                     key="New VM Template"
@@ -81,12 +85,14 @@ export function Sidebar({
                     links={vmTemplateLinks}
                 />
             </ScrollArea>
-            <CreateModal
-                opened={modalOpened}
-                onClose={closeModal}
-                onSubmit={handleSubmit}
-                type={modalType}
-            />
+            {modalType && (
+                <CreateModal
+                    opened={modalOpened}
+                    onClose={closeModal}
+                    onSubmit={handleSubmit}
+                    object={modalType}
+                />
+            )}
         </nav>
     );
 }

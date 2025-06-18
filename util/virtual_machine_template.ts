@@ -23,7 +23,7 @@ export class VirtualMachineTemplate extends TerraNode {
     public _configuration : Configuration | null = null;
 
     constructor(configuration: Configuration) {
-        super();
+        super("Virtual Machine Template");
         this.setConfiguration(configuration);
         this._varTypes = [
             {

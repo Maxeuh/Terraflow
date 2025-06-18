@@ -1,6 +1,6 @@
-import {FieldType, TerraNode} from "@/util/types";
-import {VirtualMachine} from "@/util/virtual_machine"; // Adjust the import path as necessary
-import {ProxmoxProvider} from "@/util/proxmox";
+import { ProxmoxProvider } from "@/util/proxmox";
+import { FieldType, TerraNode } from "@/util/types";
+import { VirtualMachine } from "@/util/virtual_machine"; // Adjust the import path as necessary
 
 export class Network extends TerraNode {
 
@@ -10,7 +10,7 @@ export class Network extends TerraNode {
     public _machines: VirtualMachine[] = [];
 
     constructor() {
-        super();
+        super("Network");
         this._varTypes = [
             {
                 name: "address",

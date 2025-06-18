@@ -3,6 +3,10 @@ import { TerraNode } from "@/util/types";
 import { VirtualMachineTemplate } from "@/util/virtual_machine_template";
 
 export class Configuration extends TerraNode {
+    constructor() {
+        super("Configuration");
+    }
+
     public providers: ProxmoxProvider[] = [];
 
     templates: VirtualMachineTemplate[] = [];

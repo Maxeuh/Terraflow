@@ -1,24 +1,4 @@
-import {FieldType, TerraNode} from "@/util/types";
-
-
-/*class Write_File {
-    public path : string  = "";
-    public content :string ="";
-    public permissions : string = "" ;
-
-    setPath(path : string){
-        this.path = path;
-
-    }
-    setContent(content: string){
-        this.content = content;
-    }
-    setPermission(permission : string){
-        this.permissions = permission;
-    }
-}*/
-
-
+import { FieldType, TerraNode } from "@/util/types";
 
 export class CloudInit extends TerraNode {
 
@@ -32,10 +12,8 @@ export class CloudInit extends TerraNode {
     public runcmd : string = "echo \"Cloud-init script executed on VM with hostname  ${hostname}\" \n hostnamectl set-hostname ${hostname}" ; // script that will run at the end of the cloud_init sequence 
     public final_message : string = "Cloud-init finished on VM ${hostname}.${domain}";
 
-
-
     constructor(){
-        super();
+        super("Cloud Init");
         this._varTypes = [
             {
                 name: "hostname",

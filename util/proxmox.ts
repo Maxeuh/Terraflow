@@ -1,5 +1,5 @@
-import {FieldType, TerraNode} from "@/util/types";
-import {Network} from "@/util/network";
+import { Network } from "@/util/network";
+import { FieldType, TerraNode } from "@/util/types";
 
 /**
  * ProxmoxProvider class represents a Proxmox provider.
@@ -19,7 +19,7 @@ export class ProxmoxProvider extends TerraNode {
     private sshPort: number = 22;
 
     constructor() {
-        super();
+        super("Proxmox");
         this._varTypes = [
             {
                 name: "username",

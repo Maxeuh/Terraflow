@@ -21,12 +21,18 @@ export type FormField = {
 // Represent a node.
 export abstract class TerraNode {
     protected _varTypes: FormField[] = [];
+    private _type: string = "TerraNode";
 
     public name: string = "";
     private readonly _UUID: string;
 
-    constructor() {
+    constructor(type: string) {
         this._UUID = uuidv4();
+        this._type = type;
+    }
+
+    getNodeType(): string {
+        return this._type;
     }
 
     getUUID(): string {
@@ -35,7 +41,7 @@ export abstract class TerraNode {
 
     toKebabCase(input: string): string {
         return input
-            .normalize("NFD")                     // Sépare les accents des lettres (é → e + ́)
+            .normalize("NFD")                    // Sépare les accents des lettres (é → e + ́)
             .replace(/[\u0300-\u036f]/g, "")     // Supprime les accents
             .replace(/[^a-zA-Z0-9]+/g, '-')      // Remplace les séparateurs non alphanumériques par des tirets
             .replace(/([a-z])([A-Z])/g, '$1-$2') // Ajoute un tiret entre camelCase
