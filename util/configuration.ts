@@ -1,21 +1,22 @@
 import {TerraNode} from "@/util/types";
 import fs from "fs";
 import {VirtualMachineTemplate} from "@/util/virtual_machine_template";
+import {ProxmoxProvider} from "@/util/proxmox";
 
 export class Configuration extends TerraNode {
-    private providers: TerraNode[] = [];
+    public providers: ProxmoxProvider[] = [];
 
-    private templates: VirtualMachineTemplate[] = [];
+    templates: VirtualMachineTemplate[] = [];
 
     constructor(name: string) {
         super(name);
     }
 
-    public addProvider(node: TerraNode) {
+    public addProvider(node: ProxmoxProvider) {
         this.providers.push(node);
     }
 
-    public removeProvider(node: TerraNode) {
+    public removeProvider(node: ProxmoxProvider) {
         this.providers = this.providers.filter(n => n !== node);
     }
 
@@ -42,7 +43,10 @@ terraform {
     }
 
     getChildren(): TerraNode[] {
-        return this.providers;
+        let children: TerraNode[] = [];
+        children = children.concat(this.providers);
+        children = children.concat(this.templates);
+        return children;
     }
 
     createFile(fileName: string): void {

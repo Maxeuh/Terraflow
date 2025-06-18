@@ -49,7 +49,7 @@ export class VirtualMachine extends TerraNode {
         return `resource "proxmox_virtual_environment_vm" "${this.name_resource}" {
   provider = ${this._network?._proxmox?.getProviderName()}
   name      = "${this.name}"
-  node_name = "${this._hardware?.getProxmox()?.node_name}"
+  node_name = "${this._network?._proxmox?.node_name}"
 
   clone {
     vm_id = proxmox_virtual_environment_vm.${this._hardware?.getResourceName()}.id

@@ -1,5 +1,6 @@
 import {FieldType, TerraNode} from "@/util/types";
 import { ProxmoxProvider } from "./proxmox";
+import {Configuration} from "@/util/configuration";
 
 
 export class VirtualMachineTemplate extends TerraNode {
@@ -16,12 +17,10 @@ export class VirtualMachineTemplate extends TerraNode {
     
 
     // Image configuration
-    public contentType : string = "iso"
-    public sourceName : string = "default_cloud_image"
     public sourceURL : string = "default_source.com";
     public imageFileName : string = "default_source "
 
-    private _proxmox : ProxmoxProvider | null = null;
+    public _configuration : Configuration | null = null;
 
     constructor(name: string) {
         super(name);
@@ -36,29 +35,31 @@ export class VirtualMachineTemplate extends TerraNode {
         ]
     }
 
-    setProxmox(proxmox : ProxmoxProvider) {
-        this._proxmox = proxmox;
+    setConfiguration(configuration: Configuration) {
+        this._configuration = configuration;
+
+        this._configuration.templates.push(this);
     }
 
-    getProxmox() : ProxmoxProvider | null {
-        if (this._proxmox != null) {
-            return this._proxmox;
-        }
-        else {
-            return null;
-        }
-    }
 
     getResourceName(): string {
         return this.name;
     }
 
+
     generateConfigNode(): string {
-        return `"proxmox_virtual_environment_vm" "${this.getResourceName()}" {
+        let content: string = "";
+
+        // Parcourir this._proxmox.
+        this._configuration?.providers.forEach((proxmox: ProxmoxProvider) => {
+            content += `
+resource "proxmox_virtual_environment_vm" "${this.getNodeID()}" {
+    provider = ${proxmox.getProviderName()}
+    
     name = "${this.name}"
     description = "${this.description}"
  
-    node_name = "${this._proxmox?.node_name}"
+    node_name = "${proxmox.node_name}"
 
     stop_on_destroy = ${this.stopOnDestroy}
     
@@ -74,20 +75,28 @@ export class VirtualMachineTemplate extends TerraNode {
 
     disk {
         datastore_id = "local-lvm"
-        file_id = proxmox_virtual_environment_download_file.${this.sourceName}.id
+        file_id = proxmox_virtual_environment_download_file.${"proxmox" + proxmox.getUUID() + "-" + super.getUUID()}.id
         interface = "${this.diskInterface}"
         size = ${this.diskSize}
     }
+    
+    initialization {
+    
+    }
 }
 
-resource "proxmox_virtual_environment_download_file" "${this.sourceName}" {
+resource "proxmox_virtual_environment_download_file" "${"proxmox" + proxmox.getUUID() + "-" + super.getUUID()}" {
+    provider = ${proxmox.getProviderName()}
     content_type = "iso"
-    datastore_id = "local-lvm"
-    node_name = "${this._proxmox?.node_name}"
+    datastore_id = "local"
+    node_name = "${proxmox.node_name}"
     url = "${this.sourceURL}"
     file_name = "${this.imageFileName}" 
 }
-`
+`;
+
+        });
+        return content;
     }   
 
 }
