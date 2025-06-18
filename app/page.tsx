@@ -1,5 +1,8 @@
 "use client";
 
+import NetworkNode from "@/components/Nodes/NetworkNode";
+import ProxmoxNode from "@/components/Nodes/ProxmoxNode";
+import VirtualMachineNode from "@/components/Nodes/VirtualMachineNode";
 import { SettingsDrawer } from "@/components/SettingsDrawer/SettingsDrawer";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { Configuration } from "@/util/configuration";
@@ -18,16 +21,12 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useCallback, useEffect, useRef, useState } from "react";
-import React from "react";
-import ProxmoxNode from "@/components/Nodes/ProxmoxNode";
-import NetworkNode from "@/components/Nodes/NetworkNode";
-import VirtualMachineNode from "@/components/Nodes/VirtualMachineNode";
 
 const nodeTypes = {
-    proxmox: ProxmoxNode,
-    network: NetworkNode,
-    virtualMachine: VirtualMachineNode
-}
+    Proxmox: ProxmoxNode,
+    Network: NetworkNode,
+    "Virtual Machine": VirtualMachineNode,
+};
 
 export default function Home() {
     const [nodes, setNodes, onNodesChange] = useNodesState<any>([]);

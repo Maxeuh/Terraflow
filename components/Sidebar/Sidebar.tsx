@@ -5,6 +5,7 @@ import { LinksGroup } from "@/components/LinksGroup/LinksGroup";
 import { Network } from "@/util/network";
 import { ProxmoxProvider } from "@/util/proxmox";
 import { TerraNode } from "@/util/types";
+import { VirtualMachine } from "@/util/virtual_machine";
 import { VirtualMachineTemplate } from "@/util/virtual_machine_template";
 import { ScrollArea } from "@mantine/core";
 import { Edge, Node, useReactFlow } from "@xyflow/react";
@@ -43,18 +44,22 @@ export function Sidebar({
             id: `node-${Date.now()}`,
             position: { x: 0, y: 0 },
             data: { label: object.name },
-            type: "virtualMachine",
+            type: object.getNodeType(),
         };
         flowInstance.addNodes(newNode);
         flowInstance.fitView();
     };
 
-    const vmTemplateLinks = vmTemplates.map((template) => ({
-        label: template.name,
-        onClick: () => {
-            openModal(template);
-        },
-    }));
+    const vmTemplateLinks = vmTemplates.map((template) => {
+        const vm = new VirtualMachine(template);
+        return {
+            virtualMachine: vm,
+            label: template.name,
+            onClick: () => {
+                openModal(vm);
+            },
+        };
+    });
 
     return (
         <nav className={classes.navbar}>
