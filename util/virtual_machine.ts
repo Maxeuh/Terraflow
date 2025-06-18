@@ -35,6 +35,14 @@ export class VirtualMachine extends TerraNode {
 
     setNetwork(network: Network | null) {
         this._network = network;
+
+        if (this._network?._machines) {
+            this._network._machines = this._network._machines.filter(n => n !== this);
+        }
+
+        if (network) {
+            this._network?._machines.push(this);
+        }
     }
 
     generateConfigNode(): string {

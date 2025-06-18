@@ -7,7 +7,7 @@ export class Network extends TerraNode {
     public address: string = "0.0.0.0/24";
     public comment: string = "comment";
     public _proxmox: ProxmoxProvider | null = null;
-    private _machines: VirtualMachine[] = [];
+    public _machines: VirtualMachine[] = [];
 
     constructor(name: string) {
         super(name);
@@ -25,12 +25,12 @@ export class Network extends TerraNode {
 
     addMachine(vm: VirtualMachine) {
         this._machines.push(vm);
-        vm.setNetwork(this);
+        vm._network = this;
     }
 
     removeMachine(vm: VirtualMachine) {
         this._machines = this._machines.filter(m => m !== vm);
-        vm.setNetwork(null);
+        vm._network = null;
     }
 
     getMachines(): VirtualMachine[] {
@@ -39,6 +39,14 @@ export class Network extends TerraNode {
 
     setProxmox(proxmox: ProxmoxProvider | null) {
         this._proxmox = proxmox;
+
+        if (this._proxmox?._networks) {
+            this._proxmox._networks = this._proxmox._networks.filter(n => n !== this);
+        }
+
+        if (proxmox) {
+            this._proxmox?._networks.push(this);
+        }
     }
 
     generateConfigNode(): string {

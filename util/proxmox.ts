@@ -13,7 +13,7 @@ export class ProxmoxProvider extends TerraNode {
     private insecure: boolean = true;
     private username: string = "root@pam";
     private password: string = "";
-    private _networks: Network[] = [];
+    public _networks: Network[] = [];
 
     private agent: boolean = false;
     private sshPort: number = 22;
@@ -59,12 +59,12 @@ export class ProxmoxProvider extends TerraNode {
 
     addNetwork(network: Network): void {
         this._networks.push(network);
-        network.setProxmox(this);
+        network._proxmox = this;
     }
 
     removeNetwork(network: Network): void {
         this._networks = this._networks.filter(n => n !== network);
-        network.setProxmox(null);
+        network._proxmox = null;
     }
 
     generateConfigNode(): string {
