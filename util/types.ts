@@ -36,7 +36,7 @@ export abstract class TerraNode {
     }
 
     getUUID(): string {
-        return "proxmox-" + this._UUID;
+        return "tn-" + this._UUID;
     }
 
     toKebabCase(input: string): string {
