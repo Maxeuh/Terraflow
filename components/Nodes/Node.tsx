@@ -2,15 +2,14 @@ import React, { useCallback } from 'react';
 import {Box, Flex, Paper, Text} from "@mantine/core";
 import {Handle, Position} from "@xyflow/react";
 
-export function ProxmoxNode({ icon: Icon, label, props, background }: { icon: React.FC<any>; label: string, props: any, background: string }) {
+export function ProxmoxNode({ icon: Icon, label, props, background, children }: { icon: React.FC<any>; label: string, props: any, background: string, children: any}) {
     const onChange = useCallback((evt: any) => {
         console.log(evt.target.value);
     }, []);
     console.log(props)
     return (
         <div className="text-updater-node">
-            <Handle type="source" position={Position.Left} />
-            <Handle type="target" position={Position.Right} />
+            {children}
 
             <div style={{borderRadius: "4px", overflow: "hidden", padding: "10px", backgroundColor: background, color: "white", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)"}}>
 

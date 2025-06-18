@@ -21,11 +21,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import React from "react";
 import ProxmoxNode from "@/components/Nodes/ProxmoxNode";
 import NetworkNode from "@/components/Nodes/NetworkNode";
+import VirtualMachineNode from "@/components/Nodes/VirtualMachineNode";
 
 const nodeTypes = {
     proxmox: ProxmoxNode,
     network: NetworkNode,
-    virtualMachine: VirtualMachineTemplate
+    virtualMachine: VirtualMachineNode
 }
 
 export default function Home() {

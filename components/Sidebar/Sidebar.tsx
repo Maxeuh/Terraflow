@@ -39,7 +39,7 @@ export function Sidebar({
             id: `node-${Date.now()}`,
             position: { x: 0, y: 0 },
             data: { label: name },
-            type: "proxmox"
+            type: "virtualMachine"
         };
         flowInstance.addNodes(newNode);
         flowInstance.fitView();
