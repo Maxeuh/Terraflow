@@ -18,6 +18,15 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useCallback, useEffect, useRef, useState } from "react";
+import React from "react";
+import ProxmoxNode from "@/components/Nodes/ProxmoxNode";
+import NetworkNode from "@/components/Nodes/NetworkNode";
+
+const nodeTypes = {
+    proxmox: ProxmoxNode,
+    network: NetworkNode,
+    virtualMachine: VirtualMachineTemplate
+}
 
 export default function Home() {
     const [nodes, setNodes, onNodesChange] = useNodesState<any>([]);
@@ -113,6 +122,7 @@ export default function Home() {
                         proOptions={{ hideAttribution: true }}
                         snapGrid={[20, 20]}
                         snapToGrid={true}
+                        nodeTypes={nodeTypes}
                     >
                         <Controls />
                         <Background variant={BackgroundVariant.Dots} />
