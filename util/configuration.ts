@@ -2,18 +2,18 @@ import {TerraNode} from "@/util/types";
 import fs from "fs";
 
 export class Configuration extends TerraNode {
-    private nodes: TerraNode[] = [];
+    private providers: TerraNode[] = [];
 
     constructor(name: string) {
         super(name);
     }
 
-    public addNode(node: TerraNode) {
-        this.nodes.push(node);
+    public addProvider(node: TerraNode) {
+        this.providers.push(node);
     }
 
-    public removeNode(node: TerraNode) {
-        this.nodes = this.nodes.filter(n => n !== node);
+    public removeProvider(node: TerraNode) {
+        this.providers = this.providers.filter(n => n !== node);
     }
 
     generateConfigNode(): string {
@@ -30,7 +30,7 @@ terraform {
     }
 
     getChildren(): TerraNode[] {
-        return this.nodes;
+        return this.providers;
     }
 
     createFile(fileName: string): void {
