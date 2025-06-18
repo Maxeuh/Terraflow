@@ -43,6 +43,7 @@ export function Sidebar({
             id: `node-${Date.now()}`,
             position: { x: 0, y: 0 },
             data: { label: object.name },
+            type: "virtualMachine",
         };
         flowInstance.addNodes(newNode);
         flowInstance.fitView();
