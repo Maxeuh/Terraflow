@@ -7,20 +7,25 @@ import { ProxmoxProvider } from "@/util/proxmox";
 import { TerraNode } from "@/util/types";
 import { VirtualMachine } from "@/util/virtual_machine";
 import { VirtualMachineTemplate } from "@/util/virtual_machine_template";
-import { ScrollArea } from "@mantine/core";
+import { Menu, ScrollArea, Text } from "@mantine/core";
 import { Edge, Node, useReactFlow } from "@xyflow/react";
 import { useState } from "react";
+import { MdDelete, MdEdit } from "react-icons/md";
 import { PiComputerTowerBold, PiNetwork, PiPlusBold } from "react-icons/pi";
 import { SiProxmox } from "react-icons/si";
 import classes from "./Sidebar.module.css";
 
 interface SidebarProps {
     onOpenVMTemplateDrawer: () => void;
+    onEditVMTemplate: (template: VirtualMachineTemplate) => void;
+    onDeleteVMTemplate: (template: VirtualMachineTemplate) => void;
     vmTemplates?: VirtualMachineTemplate[];
 }
 
 export function Sidebar({
     onOpenVMTemplateDrawer,
+    onEditVMTemplate,
+    onDeleteVMTemplate,
     vmTemplates = [],
 }: SidebarProps) {
     const [modalOpened, setModalOpened] = useState(false);
@@ -51,13 +56,44 @@ export function Sidebar({
 
     const vmTemplateLinks = vmTemplates.map((template) => {
         const vm = new VirtualMachine(template);
-        return {
-            virtualMachine: vm,
-            label: template.name,
-            onClick: () => {
-                openModal(vm);
-            },
-        };
+        const key = `${template.getUUID()}-${template.name}`;
+
+        return (
+            <Menu
+                width={200}
+                offset={3}
+                position="bottom-start"
+                withArrow
+                arrowPosition="side"
+                key={key}
+            >
+                <Menu.Target>
+                    <Text className={classes.link} unstyled={true}>
+                        {vm.name_resource || template.name || "Sans nom"}
+                    </Text>
+                </Menu.Target>
+                <Menu.Dropdown>
+                    <Menu.Item
+                        leftSection={<PiPlusBold />}
+                        onClick={() => openModal(vm)}
+                    >
+                        Create
+                    </Menu.Item>
+                    <Menu.Item
+                        leftSection={<MdEdit />}
+                        onClick={() => onEditVMTemplate(template)}
+                    >
+                        Edit
+                    </Menu.Item>
+                    <Menu.Item
+                        leftSection={<MdDelete />}
+                        onClick={() => onDeleteVMTemplate(template)}
+                    >
+                        Delete
+                    </Menu.Item>
+                </Menu.Dropdown>
+            </Menu>
+        );
     });
 
     return (

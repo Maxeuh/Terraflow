@@ -1,13 +1,6 @@
 "use client";
 
-import {
-    Box,
-    Collapse,
-    Group,
-    Text,
-    ThemeIcon,
-    UnstyledButton,
-} from "@mantine/core";
+import { Box, Collapse, Group, ThemeIcon, UnstyledButton } from "@mantine/core";
 import { useState } from "react";
 import { FaChevronRight } from "react-icons/fa";
 import classes from "./LinksGroup.module.css";
@@ -17,7 +10,7 @@ interface LinksGroupProps {
     label: string;
     initiallyOpened?: boolean;
     onClick?: () => void;
-    links?: { label: string; link?: string; onClick?: () => void }[];
+    links?: React.ReactNode;
     forceChevron?: boolean;
 }
 
@@ -29,20 +22,9 @@ export function LinksGroup({
     links,
     forceChevron = false,
 }: LinksGroupProps) {
-    const hasLinks = Array.isArray(links) || forceChevron;
+    const hasLinks = links || forceChevron;
     const [opened, setOpened] = useState(initiallyOpened || false);
-    const items = (hasLinks && links ? links : []).map((link) => (
-        <Text<"a">
-            component="a"
-            className={classes.link}
-            href={link.link}
-            key={link.label}
-            unstyled={true}
-            onClick={link.onClick}
-        >
-            {link.label}
-        </Text>
-    ));
+    const items = hasLinks && links;
 
     return (
         <>

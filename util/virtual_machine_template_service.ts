@@ -22,6 +22,28 @@ export class VMService extends EventEmitter {
         this._config.removeTemplate(template);
         return template;
     }
+
+    /**
+     * Met à jour un modèle de VM existant
+     * @param currentTemplate Le modèle de VM actuel à mettre à jour
+     * @param updatedFields Les champs du formulaire mis à jour
+     */
+    updateVMTemplate(currentTemplate: VirtualMachineTemplate, updatedFields: FormField[]) {
+        // Mettre à jour les champs du template et vérifier s'il y a eu des changements
+        const hasChanged = currentTemplate.setFormFields(updatedFields);
+        
+        // S'assurer que le modèle est dans la configuration
+        if (!this._config.templates.includes(currentTemplate)) {
+            this._config.addTemplate(currentTemplate);
+        }
+        
+        // Forcer une mise à jour de l'interface utilisateur, même si les champs n'ont pas changé
+        // Cela garantit que tous les composants qui utilisent ces templates seront rafraîchis
+        const updatedTemplates = [...this.getAllVMTemplates()];
+        
+        // Émettre l'événement de mise à jour avec une nouvelle référence de tableau
+        this.emit('templates-updated', updatedTemplates);
+    }
     
     /**
      * Ajoute un modèle de VM à la configuration
@@ -37,8 +59,8 @@ export class VMService extends EventEmitter {
         // Ajouter le template à la configuration
         this._config.addTemplate(template);
         
-        // Émettre l'événement
-        this.emit('templates-updated', this.getAllVMTemplates());
+        // Émettre l'événement avec une nouvelle référence de tableau
+        this.emit('templates-updated', [...this.getAllVMTemplates()]);
     }
     
     /**
@@ -47,7 +69,8 @@ export class VMService extends EventEmitter {
      */
     removeVMTemplate(template: VirtualMachineTemplate): void {
         this._config.removeTemplate(template);
-        this.emit('templates-updated', this.getAllVMTemplates());
+        // Émettre l'événement avec une nouvelle référence de tableau
+        this.emit('templates-updated', [...this.getAllVMTemplates()]);
     }
     
     /**

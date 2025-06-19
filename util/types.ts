@@ -120,11 +120,22 @@ export abstract class TerraNode {
      * @param fields
      */
     setFormFields(fields: FormField[]) {
+        let hasChanged = false;
+        
         for (const field of fields) {
             if (this.checkFormField(field.name, field.value)) {
+                const oldValue = (this as any)[field.name];
                 (this as any)[field.name] = field.value;
+                
+                // Si la valeur a changé, on marque qu'il y a eu un changement
+                if (oldValue !== field.value) {
+                    hasChanged = true;
+                }
             }
         }
+        
+        // Si on utilise EventEmitter, on pourrait émettre un événement ici
+        return hasChanged;
     }
 
     /**

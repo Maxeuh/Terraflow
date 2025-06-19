@@ -13,7 +13,8 @@ import { Flex } from "@mantine/core";
 import {
     Background,
     BackgroundVariant,
-    Controls, NodeTypes,
+    Controls,
+    NodeTypes,
     ReactFlow,
     ReactFlowProvider,
     useEdgesState,
@@ -29,8 +30,8 @@ const nodeTypes: NodeTypes = {
 };
 
 export default function Home() {
-    const [nodes, setNodes, onNodesChange] = useNodesState<any>([]);
-    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+    const [nodes, _, onNodesChange] = useNodesState<any>([]);
+    const [edges, __, onEdgesChange] = useEdgesState([]);
 
     const [drawerOpened, setDrawerOpened] = useState(false);
     const [drawerType, setDrawerType] = useState("");
@@ -44,22 +45,24 @@ export default function Home() {
     const [currentTemplate, setCurrentTemplate] =
         useState<VirtualMachineTemplate | null>(null);
 
-    const onChange = useCallback((props) => {
-        console.log(props)
-    }, [])
     useEffect(() => {
         const vmService = vmServiceRef.current;
 
         const handleTemplatesUpdated = (
             templates: VirtualMachineTemplate[]
         ) => {
-            setVmTemplates(templates);
-            console.log("VM Templates updated:", templates);
+            setVmTemplates((prevTemplates) => {
+                if (prevTemplates === templates) {
+                    return [...templates];
+                }
+                return templates;
+            });
         };
 
         vmService.on("templates-updated", handleTemplatesUpdated);
 
-        setVmTemplates(vmService.getAllVMTemplates());
+        // Initialiser avec les templates existants
+        setVmTemplates([...vmService.getAllVMTemplates()]);
 
         return () => {
             vmService.removeListener(
@@ -75,37 +78,57 @@ export default function Home() {
         setDrawerOpened(true);
     }, []);
 
-    const openVMTemplateDrawer = useCallback(() => {
+    const openCreateVMTemplateDrawer = useCallback(() => {
         const template = vmServiceRef.current.createVMTemplate();
         setCurrentTemplate(template);
         openDrawer("Create VM Template", template.getFormFields());
     }, [openDrawer]);
 
+    const openEditVMTemplateDrawer = useCallback(
+        (template: VirtualMachineTemplate) => {
+            setCurrentTemplate(template);
+            openDrawer("Edit VM Template", template.getFormFields());
+        },
+        [openDrawer]
+    );
+
     const closeDrawer = useCallback(() => {
         setDrawerOpened(false);
         setCurrentTemplate(null);
-        console.log(`Drawer closed for ${drawerType}`);
     }, [drawerType]);
 
     const handleDrawerSubmit = useCallback(
         (updatedFields: FormField[]) => {
             if (currentTemplate) {
-                vmServiceRef.current.addVMTemplate(
-                    currentTemplate,
-                    updatedFields
-                );
+                if (drawerType === "Edit VM Template") {
+                    vmServiceRef.current.updateVMTemplate(
+                        currentTemplate,
+                        updatedFields
+                    );
+                } else {
+                    vmServiceRef.current.addVMTemplate(
+                        currentTemplate,
+                        updatedFields
+                    );
+                }
             }
             setDrawerOpened(false);
             setCurrentTemplate(null);
         },
-        [currentTemplate]
+        [currentTemplate, drawerType]
     );
 
     return (
         <ReactFlowProvider>
             <Flex flex={"row"} direction={"row"}>
                 <Sidebar
-                    onOpenVMTemplateDrawer={openVMTemplateDrawer}
+                    onOpenVMTemplateDrawer={openCreateVMTemplateDrawer}
+                    onEditVMTemplate={(template) => {
+                        openEditVMTemplateDrawer(template);
+                    }}
+                    onDeleteVMTemplate={(template) =>
+                        vmServiceRef.current.removeVMTemplate(template)
+                    }
                     vmTemplates={vmTemplates}
                 />
                 <SettingsDrawer
@@ -121,7 +144,6 @@ export default function Home() {
                         edges={edges}
                         onNodesChange={onNodesChange}
                         onEdgesChange={onEdgesChange}
-                        onChange={onChange}
                         colorMode={"system"}
                         proOptions={{ hideAttribution: true }}
                         snapGrid={[20, 20]}

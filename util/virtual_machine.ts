@@ -12,7 +12,12 @@ export class VirtualMachine extends TerraNode {
     public image_name: string = "";
     public _hardware: VirtualMachineTemplate | undefined = undefined;
     public _network: Network | null = null;
-    public name_resource: string = `test`;
+    
+    // Propriété name_resource calculée dynamiquement
+    get name_resource(): string {
+        // Utiliser le nom du modèle s'il existe, sinon utiliser "test"
+        return this._hardware ? this._hardware.name : "test";
+    }
 
     constructor(template: VirtualMachineTemplate) {
         super("Virtual Machine");
@@ -47,7 +52,10 @@ export class VirtualMachine extends TerraNode {
     }
 
     generateConfigNode(): string {
-        return `resource "proxmox_virtual_environment_vm" "${this.name_resource}" {
+        // S'assurer que nous utilisons le nom le plus récent du modèle
+        const vmName = this.name_resource;
+        
+        return `resource "proxmox_virtual_environment_vm" "${vmName}" {
   provider = ${this._network?._proxmox?.getProviderName()}
   name      = "${this.name}"
   node_name = "${this._network?._proxmox?.node_name}"
