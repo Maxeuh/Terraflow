@@ -29,7 +29,10 @@ export default function NodeComponent({
     const [originalFormFields, setOriginalFormFields] = useState<any>(null);
 
     const handleSettingsClick = () => {
-        setOriginalFormFields(terraNode.getFormFields());
+        // Recalculer les champs de formulaire à chaque ouverture pour s'assurer
+        // que toutes les valeurs actuelles sont utilisées
+        const currentFormFields = terraNode.getFormFields();
+        setOriginalFormFields(currentFormFields);
         setSettingsOpened(true);
     };
 
@@ -57,7 +60,6 @@ export default function NodeComponent({
                     borderRadius: "10px",
                     position: "relative",
                     fontWeight: 700,
-                    textTransform: "uppercase",
                 }}
                 w={250}
                 h={100}
@@ -83,6 +85,7 @@ export default function NodeComponent({
                     }}
                 >
                     <Icon />
+                    {label}
                 </Box>
                 <Button
                     style={{ position: "absolute", bottom: 3, right: 3 }}

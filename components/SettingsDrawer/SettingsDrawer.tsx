@@ -80,6 +80,11 @@ export function SettingsDrawer({
     }, []);
 
     useEffect(() => {
+        // Vérifier si le champ name est présent et a une valeur
+        const nameField = initialForms.find((f) => f.name === "name");
+        console.log("Initial forms for SettingsDrawer:", initialForms);
+        console.log("Name field:", nameField);
+
         setForms(initialForms);
     }, [initialForms]);
 

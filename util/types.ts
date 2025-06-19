@@ -88,7 +88,7 @@ export abstract class TerraNode {
                 }
                 fields.push({
                     name: key,
-                    value: value,
+                    value: key === "name" ? (value || "") : value,
                     type: fieldType,
                     regex: /^.*$/,
                     mandatory: key == "name",
