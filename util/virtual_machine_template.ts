@@ -47,7 +47,7 @@ export class VirtualMachineTemplate extends TerraNode {
                 type: FieldType.CheckBox,
                 regex: /^(true|false)$/,
                 value: this.stopOnDestroy,
-                mandatory: true,
+                mandatory: false,
                 label: "Stop on destroy"
             },
             {

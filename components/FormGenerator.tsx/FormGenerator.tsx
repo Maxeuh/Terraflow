@@ -81,7 +81,7 @@ export default function FormGenerator({ forms, onChange }: FormGeneratorProps) {
                     }}
                     required={form.mandatory}
                     label={
-                        form.name +
+                        form.label +
                         (form.mandatory ? (
                             <span style={{ color: "red" }}>*</span>
                         ) : (
