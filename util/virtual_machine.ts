@@ -15,7 +15,7 @@ export class VirtualMachine extends TerraNode {
     // Propriété name_resource calculée dynamiquement
     get name_resource(): string {
         // Utiliser le nom du modèle s'il existe, sinon utiliser "test"
-        return this._hardware ? this._hardware.name : "test";
+        return this._hardware ? this._hardware.name + this.name : "test";
     }
 
     constructor(template: VirtualMachineTemplate) {
@@ -65,16 +65,16 @@ export class VirtualMachine extends TerraNode {
         // S'assurer que nous utilisons le nom le plus récent du modèle
         const vmName = this.name_resource;
         
-        return `resource "proxmox_virtual_environment_vm" "${vmName}" {
+        return `resource "proxmox_virtual_environment_vm" "${vmName + "-" + this.getUUID()}" {
   provider = ${this._network?._proxmox?.getProviderName()}
   name      = "${this.name}"
   node_name = "${this._network?._proxmox?.node_name}"
 
   depends_on = [
-    proxmox_virtual_environment_vm.${this._hardware?.getNodeID()}
+    proxmox_virtual_environment_vm.${this._hardware?.getNodeID() + "-" + this._network?._proxmox?.getUUID()}
   ]
   clone {
-    vm_id = proxmox_virtual_environment_vm.${this._hardware?.getNodeID()}.id
+    vm_id = proxmox_virtual_environment_vm.${this._hardware?.getNodeID() + "-" + this._network?._proxmox?.getUUID()}.id
   }
   
   initialization {

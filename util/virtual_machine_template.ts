@@ -18,7 +18,7 @@ export class VirtualMachineTemplate extends TerraNode {
 
     // Image configuration
     public sourceURL : string = "";
-    public imageFileName : string = " "
+    public imageFileName : string = ""
 
     public _configuration : Configuration | null = null;
 
@@ -118,7 +118,7 @@ export class VirtualMachineTemplate extends TerraNode {
         // Parcourir this._proxmox.
         this._configuration?.providers.forEach((proxmox: ProxmoxProvider) => {
             content += `
-resource "proxmox_virtual_environment_vm" "${this.getNodeID()}" {
+resource "proxmox_virtual_environment_vm" "${this.getNodeID() + "-" + proxmox.getUUID()}" {
     provider = ${proxmox.getProviderName()}
     
     name = "${this.name}"
@@ -127,7 +127,9 @@ resource "proxmox_virtual_environment_vm" "${this.getNodeID()}" {
     node_name = "${proxmox.node_name}"
 
     stop_on_destroy = ${this.stopOnDestroy}
-    
+    template = true
+    started  = false
+     
     cpu {
         cores = ${this.cpuCores}
         type = "host"
@@ -148,6 +150,9 @@ resource "proxmox_virtual_environment_vm" "${this.getNodeID()}" {
     initialization {
     
     }
+
+    scsi_hardware = "virtio-scsi-single"
+
 }
 
 resource "proxmox_virtual_environment_download_file" "${"proxmox" + proxmox.getUUID() + "-" + super.getUUID()}" {
