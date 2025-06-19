@@ -1,32 +1,40 @@
 "use client";
 
+import { useHeaderContent } from "@/components/Header/HeaderContext";
 import NetworkNode from "@/components/Nodes/NetworkNode";
+import { DataProps } from "@/components/Nodes/Node";
 import ProxmoxNode from "@/components/Nodes/ProxmoxNode";
 import VirtualMachineNode from "@/components/Nodes/VirtualMachineNode";
 import { SettingsDrawer } from "@/components/SettingsDrawer/SettingsDrawer";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { Configuration } from "@/util/configuration";
-import {FormField, TerraNode} from "@/util/types";
+import { Network } from "@/util/network";
+import { ProxmoxProvider } from "@/util/proxmox";
+import { FormField, TerraNode } from "@/util/types";
+import { VirtualMachine } from "@/util/virtual_machine";
 import { VirtualMachineTemplate } from "@/util/virtual_machine_template";
 import { VMService } from "@/util/virtual_machine_template_service";
-import { Flex } from "@mantine/core";
+import { Button, Flex } from "@mantine/core";
 import {
     addEdge,
     Background,
-    BackgroundVariant, Connection,
-    Controls, Edge, Node, NodeProps,
-    NodeTypes, OnConnect, OnDelete,
+    BackgroundVariant,
+    Connection,
+    Controls,
+    Edge,
+    Node,
+    NodeProps,
+    NodeTypes,
+    OnConnect,
+    OnDelete,
     ReactFlow,
     ReactFlowProvider,
     useEdgesState,
     useNodesState,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useCallback, useEffect, useRef, useState } from "react";
-import {Network} from "@/util/network";
-import {ProxmoxProvider} from "@/util/proxmox";
-import {VirtualMachine} from "@/util/virtual_machine";
-import {DataProps} from "@/components/Nodes/Node";
+import { JSX, useCallback, useEffect, useRef, useState } from "react";
+import { FaFileExport } from "react-icons/fa6";
 
 const nodeTypes: NodeTypes = {
     Proxmox: ProxmoxNode,
@@ -51,12 +59,35 @@ export default function Home() {
     const [currentTemplate, setCurrentTemplate] =
         useState<VirtualMachineTemplate | null>(null);
 
+    const { setHeaderContent } = useHeaderContent();
+
+    useEffect(() => {
+        setHeaderContent(
+            <>
+                <Button onClick={config.generateConfigFileContent}>
+                    <FaFileExport style={{ marginRight: 8 }} />
+                    Exporter
+                </Button>
+                {/* <Button variant="light">
+                    <FaFileImport style={{ marginRight: 8 }} />
+                    Import
+                </Button> */}
+            </>
+        );
+
+        return () => {
+            setHeaderContent(null);
+        };
+    }, [setHeaderContent]);
+
     const onConnect: OnConnect = useCallback(
         (params: Connection) => {
             let oldEdges = [...edges];
             let newEdges = addEdge(params, edges);
 
-            const edgesAdded = newEdges.filter(val => !oldEdges.includes(val));
+            const edgesAdded = newEdges.filter(
+                (val) => !oldEdges.includes(val)
+            );
 
             const edge: Connection = edgesAdded[0];
 
@@ -76,58 +107,65 @@ export default function Home() {
                 network.addMachine(virtualMachine);
             }
 
-            console.log(config.generateConfigFileContent())
+            console.log(config.generateConfigFileContent());
 
             setEdges(newEdges);
         },
         [setEdges, nodes]
-    )
+    );
 
-    const onDelete: OnDelete<Node, Edge> = useCallback(({nodes: nds, edges: edgs}: {nodes: Node[], edges: Edge[]}) => {
-        const oldEdges = [...edges];
-        edgs.map((edge) => {
-            const sourceNode = nodes.find((node) => node.id === edge.source);
-            const targetNode = nodes.find((node) => node.id === edge.target);
+    const onDelete: OnDelete<Node, Edge> = useCallback(
+        ({ nodes: nds, edges: edgs }: { nodes: Node[]; edges: Edge[] }) => {
+            const oldEdges = [...edges];
+            edgs.map((edge) => {
+                const sourceNode = nodes.find(
+                    (node) => node.id === edge.source
+                );
+                const targetNode = nodes.find(
+                    (node) => node.id === edge.target
+                );
 
-            const sourceObject: TerraNode = sourceNode.data.object;
-            const targetObject: TerraNode = targetNode.data.object;
+                const sourceObject: TerraNode = sourceNode.data.object;
+                const targetObject: TerraNode = targetNode.data.object;
 
-            const sourceName = sourceObject.getNodeType();
-            const targetName = targetObject .getNodeType();
-            console.log(sourceName)
-            console.log(targetName);
+                const sourceName = sourceObject.getNodeType();
+                const targetName = targetObject.getNodeType();
+                console.log(sourceName);
+                console.log(targetName);
 
+                if (sourceName == "Proxmox" && targetName == "Network") {
+                    const proxmox: ProxmoxProvider =
+                        sourceObject as ProxmoxProvider;
+                    const network: Network = targetObject as Network;
+                    proxmox.removeNetwork(network);
+                    console.log("ici");
+                } else if (
+                    sourceName == "Network" &&
+                    targetName == "Virtual Machine"
+                ) {
+                    const network: Network = sourceObject as Network;
+                    const virtualMachine: VirtualMachine =
+                        targetObject as VirtualMachine;
 
-            if (sourceName == "Proxmox" && targetName == "Network") {
-                const proxmox: ProxmoxProvider = sourceObject as ProxmoxProvider;
-                const network: Network = targetObject as Network;
-                proxmox.removeNetwork(network);
-                console.log("ici")
-            } else if (sourceName == "Network" && targetName == "Virtual Machine") {
-                const network: Network = sourceObject as Network;
-                const virtualMachine: VirtualMachine = targetObject as VirtualMachine;
+                    network.removeMachine(virtualMachine);
+                }
+            });
 
-                network.removeMachine(virtualMachine);
-            }
+            nds.map((n: Node) => {
+                const node: NodeProps<Node<DataProps>> =
+                    n as unknown as NodeProps<Node<DataProps>>;
 
-        });
+                const nodeObject: TerraNode = node.data.object;
+                const nodeName: string = nodeObject.getNodeType();
 
-        nds.map((n: Node) => {
-            const node: NodeProps<Node<DataProps>> = n as unknown as NodeProps<Node<DataProps>>;
-
-            const nodeObject: TerraNode = node.data.object;
-            const nodeName: string = nodeObject.getNodeType();
-
-            if (nodeName == "Proxmox") {
-                config.removeProvider(nodeObject as ProxmoxProvider);
-            }
-
-        });
-        console.log(config.generateConfigFileContent())
-
+                if (nodeName == "Proxmox") {
+                    config.removeProvider(nodeObject as ProxmoxProvider);
+                }
+            });
+            console.log(config.generateConfigFileContent());
         },
         [nodes]
-    )
+    );
 
     useEffect(() => {
         const vmService = vmServiceRef.current;
@@ -145,7 +183,6 @@ export default function Home() {
 
         vmService.on("templates-updated", handleTemplatesUpdated);
 
-        // Initialiser avec les templates existants
         setVmTemplates([...vmService.getAllVMTemplates()]);
 
         return () => {
@@ -244,4 +281,7 @@ export default function Home() {
             </Flex>
         </ReactFlowProvider>
     );
+}
+function setHeaderContent(arg0: JSX.Element) {
+    throw new Error("Function not implemented.");
 }

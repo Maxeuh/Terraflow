@@ -6,9 +6,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaChevronDown } from "react-icons/fa";
 import classes from "./Header.module.css";
+import { useHeaderContent } from "./HeaderContext";
 
-const links = [
-    { link: "/about", label: "Features" },
+interface LinkItem {
+    link: string;
+    label: string;
+    links?: Array<{ link: string; label: string }>;
+}
+
+const links: LinkItem[] = [
+    { link: "/about", label: "About" },
+    /*
     {
         link: "",
         label: "Learn",
@@ -19,10 +27,16 @@ const links = [
             { link: "/blog", label: "Blog" },
         ],
     },
+    */
 ];
 
-export function Header() {
+interface HeaderProps {
+    children?: React.ReactNode;
+}
+
+export function Header({ children }: HeaderProps) {
     const [opened, { toggle }] = useDisclosure(false);
+    const { headerContent } = useHeaderContent();
 
     const items = links.map((link) => {
         const menuItems = link.links?.map((item) => (
@@ -75,9 +89,8 @@ export function Header() {
                         Terraflow
                     </Text>
                 </Link>
-                <Group gap={5} visibleFrom="sm">
-                    {items}
-                </Group>
+                <Group gap={5}>{headerContent}</Group>
+                <Group gap={5}>{items}</Group>
                 {opened && <div className={classes.mobileNav}>{items}</div>}
                 <Burger
                     opened={opened}

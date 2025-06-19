@@ -1,4 +1,5 @@
 import { Header } from "@/components/Header/Header";
+import { HeaderProvider } from "@/components/Header/HeaderContext";
 import {
     ColorSchemeScript,
     MantineColorsTuple,
@@ -129,8 +130,10 @@ export default function RootLayout({
             </head>
             <body>
                 <MantineProvider defaultColorScheme="auto" theme={theme}>
-                    <Header />
-                    {children}
+                    <HeaderProvider>
+                        <Header />
+                        {children}
+                    </HeaderProvider>
                 </MantineProvider>
             </body>
         </html>

@@ -1,8 +1,7 @@
-import { SettingsDrawer } from "@/components/SettingsDrawer/SettingsDrawer";
 import { TerraNode } from "@/util/types";
 import { Box, Button, Flex } from "@mantine/core";
 import { Node, NodeProps } from "@xyflow/react";
-import React, { useState } from "react";
+import React from "react";
 import { IoSettingsSharp } from "react-icons/io5";
 
 export type DataProps = {
@@ -24,22 +23,6 @@ export function NodeComponent({
     background,
     children,
 }: NodeComponentProps) {
-    const [settingsOpened, setSettingsOpened] = useState(false);
-    const terraNode = props.data.object;
-
-    const handleSettingsClick = () => {
-        setSettingsOpened(true);
-    };
-
-    const handleSettingsClose = () => {
-        setSettingsOpened(false);
-    };
-
-    const handleFormSubmit = (formData: any) => {
-        terraNode.setFormFields(formData);
-        setSettingsOpened(false);
-    };
-
     return (
         <Box className="text-updater-node">
             {children}
@@ -84,19 +67,10 @@ export function NodeComponent({
                     variant="subtle"
                     color="gray"
                     radius="xl"
-                    onClick={handleSettingsClick}
                 >
                     <IoSettingsSharp />
                 </Button>
             </Flex>
-
-            <SettingsDrawer
-                opened={settingsOpened}
-                onClose={handleSettingsClose}
-                onSubmit={handleFormSubmit}
-                title={`Edit ${terraNode.name || label}`}
-                forms={terraNode.getFormFields()}
-            />
         </Box>
     );
 }
