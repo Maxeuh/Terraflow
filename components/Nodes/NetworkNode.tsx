@@ -1,14 +1,14 @@
-import Node from "@/components/Nodes/Node";
+import NodeComponent, {DataProps} from "@/components/Nodes/Node";
 import { PiComputerTowerBold, PiNetwork } from "react-icons/pi";
-import {Handle, Position} from "@xyflow/react";
+import {Handle, Node, Position} from "@xyflow/react";
 import React from "react";
 
-export function ProxmoxNode(props: any) {
+export function ProxmoxNode(props: Node<DataProps>) {
     return (
-        <Node icon={PiNetwork} label={"Network"} props={props} background={"rgba(66, 135, 245, 0.8)"}>
+        <NodeComponent icon={PiNetwork} label={"Network"} props={props} background={"rgba(66, 135, 245, 0.8)"}>
             <Handle type="target" position={Position.Left} />
             <Handle type="source" position={Position.Right} />
-        </Node>
+        </NodeComponent>
     )
 }
 

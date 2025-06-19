@@ -1,8 +1,13 @@
 import React, { useCallback } from 'react';
 import {Box, Flex, Paper, Text} from "@mantine/core";
-import {Handle, Position} from "@xyflow/react";
+import {Handle, Node, Position} from "@xyflow/react";
+import {TerraNode} from "@/util/types";
 
-export function ProxmoxNode({ icon: Icon, label, props, background, children }: { icon: React.FC<any>; label: string, props: any, background: string, children: any}) {
+export type DataProps = {
+    object: TerraNode
+}
+
+export function NodeComponent({ icon: Icon, label, props, background, children }: { icon: React.FC<any>; label: string, props: Node<DataProps>, background: string, children: any}) {
     const onChange = useCallback((evt: any) => {
         console.log(evt.target.value);
     }, []);
@@ -24,11 +29,11 @@ export function ProxmoxNode({ icon: Icon, label, props, background, children }: 
                     <Text color={"white"} fw={700} style={{fontSize: "8px"}}>{label}</Text>
 
                 </Flex>
-                <span style={{fontWeight: "bold", fontSize: '8px'}}>Nom a changer</span>
+                <p style={{fontWeight: "bold", fontSize: '8px', textAlign: "center"}}>{props.data.object.name}</p>
 
             </div>
         </div>
     );
 }
 
-export default ProxmoxNode;
+export default NodeComponent;
