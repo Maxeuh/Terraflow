@@ -14,8 +14,8 @@ import {
     addEdge,
     Background,
     BackgroundVariant, Connection,
-    Controls,
-    NodeTypes, OnConnect,
+    Controls, Edge, Node, NodeProps,
+    NodeTypes, OnConnect, OnDelete,
     ReactFlow,
     ReactFlowProvider,
     useEdgesState,
@@ -26,6 +26,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {Network} from "@/util/network";
 import {ProxmoxProvider} from "@/util/proxmox";
 import {VirtualMachine} from "@/util/virtual_machine";
+import {DataProps} from "@/components/Nodes/Node";
 
 const nodeTypes: NodeTypes = {
     Proxmox: ProxmoxNode,
@@ -75,9 +76,57 @@ export default function Home() {
                 network.addMachine(virtualMachine);
             }
 
+            console.log(config.generateConfigFileContent())
+
             setEdges(newEdges);
         },
         [setEdges, nodes]
+    )
+
+    const onDelete: OnDelete<Node, Edge> = useCallback(({nodes: nds, edges: edgs}: {nodes: Node[], edges: Edge[]}) => {
+        const oldEdges = [...edges];
+        edgs.map((edge) => {
+            const sourceNode = nodes.find((node) => node.id === edge.source);
+            const targetNode = nodes.find((node) => node.id === edge.target);
+
+            const sourceObject: TerraNode = sourceNode.data.object;
+            const targetObject: TerraNode = targetNode.data.object;
+
+            const sourceName = sourceObject.getNodeType();
+            const targetName = targetObject .getNodeType();
+            console.log(sourceName)
+            console.log(targetName);
+
+
+            if (sourceName == "Proxmox" && targetName == "Network") {
+                const proxmox: ProxmoxProvider = sourceObject as ProxmoxProvider;
+                const network: Network = targetObject as Network;
+                proxmox.removeNetwork(network);
+                console.log("ici")
+            } else if (sourceName == "Network" && targetName == "Virtual Machine") {
+                const network: Network = sourceObject as Network;
+                const virtualMachine: VirtualMachine = targetObject as VirtualMachine;
+
+                network.removeMachine(virtualMachine);
+            }
+
+        });
+
+        nds.map((n: Node) => {
+            const node: NodeProps<Node<DataProps>> = n as unknown as NodeProps<Node<DataProps>>;
+
+            const nodeObject: TerraNode = node.data.object;
+            const nodeName: string = nodeObject.getNodeType();
+
+            if (nodeName == "Proxmox") {
+                config.removeProvider(nodeObject as ProxmoxProvider);
+            }
+
+        });
+        console.log(config.generateConfigFileContent())
+
+        },
+        [nodes]
     )
 
     useEffect(() => {
@@ -181,6 +230,7 @@ export default function Home() {
                         onNodesChange={onNodesChange}
                         onEdgesChange={onEdgesChange}
                         onConnect={onConnect}
+                        onDelete={onDelete}
                         colorMode={"system"}
                         proOptions={{ hideAttribution: true }}
                         snapGrid={[20, 20]}
