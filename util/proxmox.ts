@@ -22,13 +22,36 @@ export class ProxmoxProvider extends TerraNode {
         super("Proxmox");
         this._varTypes = [
             {
+                name: "name",
+                type: FieldType.String,
+                regex: /^[a-zA-Z0-9-]+$/,
+                value: this.name,
+                mandatory: true,
+                label: "Name"
+            },
+            {
+                name: "host",
+                type: FieldType.String,
+                regex: /^([a-zA-Z0-9.-]+)$/,
+                value: this.host,
+                mandatory: true,
+                label: "Host (IP or FQDN)"
+            },
+            {
+                name: "apiToken",
+                type: FieldType.String,
+                regex: /^[a-zA-Z0-9._-]+$/,
+                value: this.apiToken,
+                mandatory: false,
+                label: "API Token"
+            },
+            {
                 name: "username",
                 type: FieldType.String,
                 regex: /^[a-zA-Z0-9._-]+@(pam|pve)$/,
-                value: this.insecure,
+                value: this.username,
                 mandatory: true,
                 label: "Username"
-
             },
             {
                 name: "password",
@@ -54,10 +77,24 @@ export class ProxmoxProvider extends TerraNode {
             }, {
                 name: "sshPort",
                 type: FieldType.Integer,
-                regex: /.*/,
+                regex: /^[0-9]+$/,
                 value: this.sshPort,
                 mandatory: true,
                 label: "SSH port"
+            }, {
+                name: "node_name",
+                type: FieldType.String,
+                regex: /^[a-zA-Z0-9-]+$/,
+                value: this.node_name,
+                mandatory: true,
+                label: "Node name"
+            }, {
+                name: "agent",
+                type: FieldType.CheckBox,
+                regex: /^[a-zA-Z0-9-]+$/,
+                value: this.agent,
+                mandatory: false,
+                label: "Agent"
             }
         ]
     }

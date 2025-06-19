@@ -9,7 +9,6 @@ export class VirtualMachine extends TerraNode {
     public keys: string = "";
     public address: string = "0.0.0.0/24";
     public gateway: string = "0.0.0.0/24";
-    public image_name: string = "";
     public _hardware: VirtualMachineTemplate | undefined = undefined;
     public _network: Network | null = null;
     
@@ -23,6 +22,14 @@ export class VirtualMachine extends TerraNode {
         super("Virtual Machine");
         this._hardware = template;
         this._varTypes = [
+            {
+                name: "name",
+                type: FieldType.String,
+                regex: /^[a-zA-Z0-9-]+$/,
+                value: this.name,
+                mandatory: true,
+                label: "Name"
+            },
             {
                 name: "address",
                 type: FieldType.String,

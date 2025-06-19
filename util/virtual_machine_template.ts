@@ -17,8 +17,8 @@ export class VirtualMachineTemplate extends TerraNode {
     
 
     // Image configuration
-    public sourceURL : string = "default_source.com";
-    public imageFileName : string = "default_source "
+    public sourceURL : string = "";
+    public imageFileName : string = " "
 
     public _configuration : Configuration | null = null;
 
@@ -33,6 +33,70 @@ export class VirtualMachineTemplate extends TerraNode {
                 value: this.name,
                 mandatory : true,
                 label: "Name"
+            },
+            {
+                name: "description",
+                type: FieldType.String,
+                regex: /^.{0,100}$/,
+                value: this.description,
+                mandatory: false,
+                label: "Description"
+            },
+            {
+                name: "stopOnDestroy",
+                type: FieldType.CheckBox,
+                regex: /^(true|false)$/,
+                value: this.stopOnDestroy,
+                mandatory: true,
+                label: "Stop on destroy"
+            },
+            {
+                name: "cpuCores",
+                type: FieldType.Integer,
+                regex: /^[1-9][0-9]*$/,
+                value: this.cpuCores,
+                mandatory: true,
+                label: "CPU Cores"
+            },
+            {
+                name: "memory",
+                type: FieldType.Integer,
+                regex: /^[1-9][0-9]*$/,
+                value: this.memory,
+                mandatory: true,
+                label: "Memory (MB)"
+            },
+            {
+                name: "diskInterface",
+                type: FieldType.String,
+                regex: /^(virtio0|scsi0|ide0|sata0)$/,
+                value: this.diskInterface,
+                mandatory : true,
+                label : "Disk Interface (virtio0, scsi0, ide0, sata0)"
+            },
+            {
+                name: "diskSize",
+                type: FieldType.Integer,
+                regex: /^[1-9][0-9]*$/,
+                value: this.diskSize,
+                mandatory : true,
+                label : "Disk Size (GB)"
+            },
+            {
+                name: "sourceURL",
+                type: FieldType.String,
+                regex : /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/,
+                value : this.sourceURL,
+                mandatory : true,
+                label : "Source URL"
+            },
+            {
+                name : "imageFileName",
+                type : FieldType.String,
+                regex : /^[a-zA-Z0-9._-]+$/,
+                value : this.imageFileName,
+                mandatory : true,
+                label : "Image File Name"
             }
         ]
     }

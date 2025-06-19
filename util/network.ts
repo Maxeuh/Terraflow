@@ -13,6 +13,22 @@ export class Network extends TerraNode {
         super("Network");
         this._varTypes = [
             {
+                name: "name",
+                type: FieldType.String,
+                regex: /^[a-zA-Z0-9-]+$/,
+                value: this.name,
+                mandatory: true,
+                label: "Name"
+            },
+            {
+                name: "comment",
+                type: FieldType.String,
+                regex: /^.{0,100}$/,
+                value: this.comment,
+                mandatory: false,
+                label: "Comment"
+            },
+            {
                 name: "address",
                 type: FieldType.String,
                 regex: /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\/([0-9]|[12]\d|3[0-2])$/,
