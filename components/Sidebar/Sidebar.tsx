@@ -8,14 +8,16 @@ import { TerraNode } from "@/util/types";
 import { VirtualMachine } from "@/util/virtual_machine";
 import { VirtualMachineTemplate } from "@/util/virtual_machine_template";
 import { Menu, ScrollArea, Text } from "@mantine/core";
-import { Edge, Node, useReactFlow } from "@xyflow/react";
+import {addEdge, Edge, Node, useReactFlow} from "@xyflow/react";
 import { useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { PiComputerTowerBold, PiNetwork, PiPlusBold } from "react-icons/pi";
 import { SiProxmox } from "react-icons/si";
 import classes from "./Sidebar.module.css";
+import {Configuration} from "@/util/configuration";
 
 interface SidebarProps {
+    config: Configuration,
     onOpenVMTemplateDrawer: () => void;
     onEditVMTemplate: (template: VirtualMachineTemplate) => void;
     onDeleteVMTemplate: (template: VirtualMachineTemplate) => void;
@@ -23,6 +25,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({
+    config,
     onOpenVMTemplateDrawer,
     onEditVMTemplate,
     onDeleteVMTemplate,
@@ -54,6 +57,12 @@ export function Sidebar({
             data: { object },
             type: object.getNodeType(),
         };
+
+        if (object.getNodeType() == "Proxmox") {
+            config.addProvider(object as ProxmoxProvider);
+            console.log(config)
+        }
+
         flowInstance.addNodes(newNode);
     };
 
