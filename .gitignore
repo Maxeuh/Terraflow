@@ -44,4 +44,5 @@ next-env.d.ts
 .env*
 
 # ide
+.vscode
 .idea
