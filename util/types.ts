@@ -16,6 +16,7 @@ export type FormField = {
     type: FieldType;
     regex: RegExp;
     mandatory: boolean;
+    label: string;
 }
 
 // Represent a node.
@@ -90,7 +91,8 @@ export abstract class TerraNode {
                     value: value,
                     type: fieldType,
                     regex: /^.*$/,
-                    mandatory: false
+                    mandatory: false,
+                    label: key
                 })
 
             }

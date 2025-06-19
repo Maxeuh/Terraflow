@@ -12,7 +12,7 @@ export default function FormGenerator({ forms, onChange }: FormGeneratorProps) {
         <div key={index} className="form-field">
             {form.type !== FieldType.CheckBox && (
                 <label htmlFor={form.name}>
-                    {form.name}{" "}
+                    {form.label}{" "}
                     {form.mandatory && <span style={{ color: "red" }}>*</span>}
                 </label>
             )}

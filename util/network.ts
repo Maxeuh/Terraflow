@@ -17,7 +17,8 @@ export class Network extends TerraNode {
                 type: FieldType.String,
                 regex: /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\/([0-9]|[12]\d|3[0-2])$/,
                 value: this.address,
-                mandatory: true
+                mandatory: true,
+                label: "IP Address of the Proxmox in the network"
             }
         ]
     }

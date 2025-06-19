@@ -26,7 +26,8 @@ export class ProxmoxProvider extends TerraNode {
                 type: FieldType.String,
                 regex: /^[a-zA-Z0-9._-]+@(pam|pve)$/,
                 value: this.insecure,
-                mandatory: true
+                mandatory: true,
+                label: "Username"
 
             },
             {
@@ -34,25 +35,29 @@ export class ProxmoxProvider extends TerraNode {
                 type: FieldType.Password,
                 regex: /.*/,
                 value: this.password,
-                mandatory: true
+                mandatory: true,
+                label: "Password"
             }, {
                 name: "insecure",
                 type: FieldType.CheckBox,
                 regex: /.*/,
                 value: this.insecure,
-                mandatory: false
+                mandatory: false,
+                label: "Insecure (disable SSL verification if using self-signed certificates)"
             }, {
                 name: "port",
                 type: FieldType.Integer,
                 regex: /.*/,
                 value: this.port,
-                mandatory: true
+                mandatory: true,
+                label: "HTTP(s) port"
             }, {
                 name: "sshPort",
                 type: FieldType.Integer,
                 regex: /.*/,
                 value: this.sshPort,
-                mandatory: true
+                mandatory: true,
+                label: "SSH port"
             }
         ]
     }

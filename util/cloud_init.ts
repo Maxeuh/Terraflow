@@ -20,50 +20,58 @@ export class CloudInit extends TerraNode {
                 type: FieldType.String,
                 regex: /^[a-zA-Z0-9._-]$/,
                 value: this.hostname,
-                mandatory : true
+                mandatory : true,
+                label: "Hostname"
             },
             {
                 name: "username",
                 type: FieldType.String,
                 regex: /^[a-zA-Z0-9._-]$/,
                 value: this.userName,
-                mandatory : false
+                mandatory : false,
+                label: "Username"
             }, {
                 name: "sudo",
                 type: FieldType.String,
                 regex: /.*/,
                 value: this.userSudo,
-                mandatory : true 
+                mandatory : true,
+                label: "sudo"
             }, {
                 name: "shell",
                 type: FieldType.String,
                 regex: /.*/,
                 value: this.userShell,
-                mandatory : true 
+                mandatory : true,
+                label: "Default shell"
             }, {
                 name: "package update",
                 type: FieldType.CheckBox,
                 regex: /.*/,
                 value: this.package_update,
-                mandatory : false
+                mandatory : false,
+                label: "Update packages"
             }, {
                 name: "packages",
                 type: FieldType.String,
                 regex: /^([a-zA-Z0-9_-]+\s*)(\s*,\s*[a-zA-Z0-9_-]+\s*)*$/,
                 value: this.packages,
-                mandatory : false 
+                mandatory : false,
+                label: "Packages to install (comma separated)"
             }, {
                 name: "script",
                 type: FieldType.String,
                 regex: /^([^\n\r]+(\r?\n)?)+$/,
                 value: this.runcmd,
-                mandatory : true
+                mandatory : true,
+                label: "Script to run at the end of cloud-init"
             },{
                 name: "message final",
                 type: FieldType.String,
                 regex: /^[a-zA-Z0-9._-]$/,
                 value: this.runcmd,
-                mandatory : true 
+                mandatory : true,
+                label: "Final message to display"
             }
         ]
     }

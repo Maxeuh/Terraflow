@@ -29,12 +29,14 @@ export class VirtualMachine extends TerraNode {
                 regex: /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\/([0-9]|[12]\d|3[0-2])$/,
                 value: this.address,
                 mandatory: true,
+                label: "IP Address"
             }, {
                 name: "gateway",
                 type: FieldType.String,
                 regex: /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\/([0-9]|[12]\d|3[0-2])$/,
                 value: this.gateway,
                 mandatory: true,
+                label: "Gateway"
             }
         ]
     }

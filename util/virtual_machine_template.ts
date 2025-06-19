@@ -31,7 +31,8 @@ export class VirtualMachineTemplate extends TerraNode {
                 type: FieldType.String,
                 regex: /^[a-zA-Z0-9.-]+$/,
                 value: this.name,
-                mandatory : true
+                mandatory : true,
+                label: "Name"
             }
         ]
     }
