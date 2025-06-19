@@ -11,32 +11,29 @@ export type DataProps = {
 
 interface NodeComponentProps {
     icon: React.FC<any>;
-    label: string;
     props: NodeProps<Node<DataProps>>;
     background: string;
     children: React.ReactNode;
+    label?: string;
 }
 
 export default function NodeComponent({
     icon: Icon,
-    label,
     props,
     background,
     children,
+    label,
 }: NodeComponentProps) {
     const [settingsOpened, setSettingsOpened] = useState(false);
     const terraNode = props.data.object;
-    // Stockage des valeurs originales pour pouvoir les restaurer en cas d'annulation
     const [originalFormFields, setOriginalFormFields] = useState<any>(null);
 
     const handleSettingsClick = () => {
-        // Sauvegarder les valeurs originales lors de l'ouverture
         setOriginalFormFields(terraNode.getFormFields());
         setSettingsOpened(true);
     };
 
     const handleSettingsClose = () => {
-        // Restaurer les valeurs originales lors de l'annulation
         if (originalFormFields) {
             terraNode.setFormFields(originalFormFields);
         }
@@ -46,7 +43,6 @@ export default function NodeComponent({
     const handleFormSubmit = (formData: any) => {
         terraNode.setFormFields(formData);
         setSettingsOpened(false);
-        // Réinitialiser les valeurs originales après la soumission
         setOriginalFormFields(null);
     };
 
