@@ -8,7 +8,7 @@ export class VirtualMachine extends TerraNode {
     public username: string = "root";
     public keys: string = "";
     public address: string = "0.0.0.0/24";
-    public gateway: string = "0.0.0.0/24";
+    public gateway: string = "0.0.0.0";
     public _hardware: VirtualMachineTemplate | undefined = undefined;
     public _network: Network | null = null;
     
@@ -40,7 +40,8 @@ export class VirtualMachine extends TerraNode {
             }, {
                 name: "gateway",
                 type: FieldType.String,
-                regex: /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\/([0-9]|[12]\d|3[0-2])$/,
+                // Regex pour valider l'adresse ip sans le masque de sous-réseau
+                regex: /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)$/,
                 value: this.gateway,
                 mandatory: true,
                 label: "Gateway"
