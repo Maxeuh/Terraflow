@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react';
 import {Box, Flex, Paper, Text} from "@mantine/core";
-import {Handle, Node, Position} from "@xyflow/react";
+import {Handle, Node, NodeProps, Position} from "@xyflow/react";
 import {TerraNode} from "@/util/types";
 
 export type DataProps = {
     object: TerraNode
 }
 
-export function NodeComponent({ icon: Icon, label, props, background, children }: { icon: React.FC<any>; label: string, props: Node<DataProps>, background: string, children: any}) {
+export function NodeComponent({ icon: Icon, label, props, background, children }: { icon: React.FC<any>; label: string, props: NodeProps<Node<DataProps>>, background: string, children: any}) {
     const onChange = useCallback((evt: any) => {
         console.log(evt.target.value);
     }, []);

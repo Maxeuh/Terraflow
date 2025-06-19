@@ -13,7 +13,7 @@ import { Flex } from "@mantine/core";
 import {
     Background,
     BackgroundVariant,
-    Controls,
+    Controls, NodeTypes,
     ReactFlow,
     ReactFlowProvider,
     useEdgesState,
@@ -22,7 +22,7 @@ import {
 import "@xyflow/react/dist/style.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const nodeTypes = {
+const nodeTypes: NodeTypes = {
     Proxmox: ProxmoxNode,
     Network: NetworkNode,
     "Virtual Machine": VirtualMachineNode,
