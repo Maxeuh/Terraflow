@@ -91,7 +91,7 @@ export abstract class TerraNode {
                     value: value,
                     type: fieldType,
                     regex: /^.*$/,
-                    mandatory: false,
+                    mandatory: key == "name",
                     label: key
                 })
 

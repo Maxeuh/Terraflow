@@ -1,4 +1,5 @@
 import NodeComponent, { DataProps } from "@/components/Nodes/Node";
+import { VirtualMachine } from "@/util/virtual_machine";
 import {
     Connection,
     Edge,
@@ -38,7 +39,7 @@ export function ProxmoxNode(props: NodeProps<Node<DataProps>>) {
     return (
         <NodeComponent
             icon={PiComputerTowerBold}
-            label={"Virtual Machine"}
+            label={(props.data.object as VirtualMachine)._hardware?.name}
             props={props}
             background={"rgb(237, 7, 180)"}
         >

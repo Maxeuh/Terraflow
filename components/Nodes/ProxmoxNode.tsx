@@ -24,7 +24,6 @@ export function ProxmoxNode(props: NodeProps<Node<DataProps>>) {
     return (
         <NodeTemplate
             icon={SiProxmox}
-            label={"Proxmox"}
             props={props}
             background={"rgb(230, 113, 0)"}
         >

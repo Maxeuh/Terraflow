@@ -1,7 +1,8 @@
+import { SettingsDrawer } from "@/components/SettingsDrawer/SettingsDrawer";
 import { TerraNode } from "@/util/types";
 import { Box, Button, Flex } from "@mantine/core";
 import { Node, NodeProps } from "@xyflow/react";
-import React from "react";
+import React, { useState } from "react";
 import { IoSettingsSharp } from "react-icons/io5";
 
 export type DataProps = {
@@ -16,13 +17,39 @@ interface NodeComponentProps {
     children: React.ReactNode;
 }
 
-export function NodeComponent({
+export default function NodeComponent({
     icon: Icon,
     label,
     props,
     background,
     children,
 }: NodeComponentProps) {
+    const [settingsOpened, setSettingsOpened] = useState(false);
+    const terraNode = props.data.object;
+    // Stockage des valeurs originales pour pouvoir les restaurer en cas d'annulation
+    const [originalFormFields, setOriginalFormFields] = useState<any>(null);
+
+    const handleSettingsClick = () => {
+        // Sauvegarder les valeurs originales lors de l'ouverture
+        setOriginalFormFields(terraNode.getFormFields());
+        setSettingsOpened(true);
+    };
+
+    const handleSettingsClose = () => {
+        // Restaurer les valeurs originales lors de l'annulation
+        if (originalFormFields) {
+            terraNode.setFormFields(originalFormFields);
+        }
+        setSettingsOpened(false);
+    };
+
+    const handleFormSubmit = (formData: any) => {
+        terraNode.setFormFields(formData);
+        setSettingsOpened(false);
+        // Réinitialiser les valeurs originales après la soumission
+        setOriginalFormFields(null);
+    };
+
     return (
         <Box className="text-updater-node">
             {children}
@@ -67,12 +94,19 @@ export function NodeComponent({
                     variant="subtle"
                     color="gray"
                     radius="xl"
+                    onClick={handleSettingsClick}
                 >
                     <IoSettingsSharp />
                 </Button>
             </Flex>
+
+            <SettingsDrawer
+                opened={settingsOpened}
+                onClose={handleSettingsClose}
+                onSubmit={handleFormSubmit}
+                title={`Edit ${terraNode.name || label}`}
+                forms={terraNode.getFormFields()}
+            />
         </Box>
     );
 }
-
-export default NodeComponent;

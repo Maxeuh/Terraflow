@@ -43,7 +43,6 @@ export function ProxmoxNode(props: NodeProps<Node<DataProps>>) {
     return (
         <NodeComponent
             icon={PiNetwork}
-            label={"Network"}
             props={props}
             background={"rgb(66, 135, 245)"}
         >
