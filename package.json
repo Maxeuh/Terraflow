@@ -23,6 +23,7 @@
         "@mantine/nprogress": "^8.1.0",
         "@mantine/spotlight": "^8.1.0",
         "@mantine/tiptap": "^8.1.0",
+        "@octokit/rest": "^22.0.0",
         "@tiptap/extension-link": "^2.14.0",
         "@tiptap/pm": "^2.14.0",
         "@tiptap/react": "^2.14.0",
