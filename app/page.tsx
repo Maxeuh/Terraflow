@@ -64,7 +64,7 @@ export default function Home() {
     useEffect(() => {
         setHeaderContent(
             <>
-                <Button onClick={config.generateConfigFileContent}>
+                <Button onClick={() => config.generateTerraformFile()}>
                     <FaFileExport style={{ marginRight: 8 }} />
                     Exporter
                 </Button>
