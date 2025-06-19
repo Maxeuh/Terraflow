@@ -6,7 +6,7 @@ import VirtualMachineNode from "@/components/Nodes/VirtualMachineNode";
 import { SettingsDrawer } from "@/components/SettingsDrawer/SettingsDrawer";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { Configuration } from "@/util/configuration";
-import { FormField } from "@/util/types";
+import {FormField, TerraNode} from "@/util/types";
 import { VirtualMachineTemplate } from "@/util/virtual_machine_template";
 import { VMService } from "@/util/virtual_machine_template_service";
 import { Flex } from "@mantine/core";
@@ -23,6 +23,9 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useCallback, useEffect, useRef, useState } from "react";
+import {Network} from "@/util/network";
+import {ProxmoxProvider} from "@/util/proxmox";
+import {VirtualMachine} from "@/util/virtual_machine";
 
 const nodeTypes: NodeTypes = {
     Proxmox: ProxmoxNode,
@@ -38,7 +41,8 @@ export default function Home() {
     const [drawerType, setDrawerType] = useState("");
     const [formFields, setFormFields] = useState<FormField[]>([]);
 
-    const config = new Configuration();
+    const [config, setConfig] = useState(new Configuration());
+
     const vmServiceRef = useRef(new VMService(config));
     const [vmTemplates, setVmTemplates] = useState<VirtualMachineTemplate[]>(
         []
@@ -47,8 +51,33 @@ export default function Home() {
         useState<VirtualMachineTemplate | null>(null);
 
     const onConnect: OnConnect = useCallback(
-        (params: Connection) => setEdges((eds) => addEdge(params, eds)),
-        [setEdges]
+        (params: Connection) => {
+            let oldEdges = [...edges];
+            let newEdges = addEdge(params, edges);
+
+            const edgesAdded = newEdges.filter(val => !oldEdges.includes(val));
+
+            const edge: Connection = edgesAdded[0];
+
+            const sourceNode = nodes.find((node) => node.id === edge.source);
+            const targetNode = nodes.find((node) => node.id === edge.target);
+
+            const sourceObject: TerraNode = sourceNode.data.object;
+            const targetObject: TerraNode = targetNode.data.object;
+
+            if (sourceObject.getNodeType() === "Proxmox") {
+                const proxmox = sourceObject as ProxmoxProvider;
+                const network = targetObject as Network;
+                proxmox.addNetwork(network);
+            } else if (targetObject.getNodeType() === "Virtual Machine") {
+                const network = sourceObject as Network;
+                const virtualMachine = targetObject as VirtualMachine;
+                network.addMachine(virtualMachine);
+            }
+
+            setEdges(newEdges);
+        },
+        [setEdges, nodes]
     )
 
     useEffect(() => {
@@ -128,6 +157,7 @@ export default function Home() {
         <ReactFlowProvider>
             <Flex flex={"row"} direction={"row"}>
                 <Sidebar
+                    config={config}
                     onOpenVMTemplateDrawer={openCreateVMTemplateDrawer}
                     onEditVMTemplate={(template) => {
                         openEditVMTemplateDrawer(template);
