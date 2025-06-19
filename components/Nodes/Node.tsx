@@ -1,34 +1,65 @@
-import React, { useCallback } from 'react';
-import {Box, Flex, Paper, Text} from "@mantine/core";
-import {Handle, Node, NodeProps, Position} from "@xyflow/react";
-import {TerraNode} from "@/util/types";
+import { TerraNode } from "@/util/types";
+import { Box, Flex } from "@mantine/core";
+import { Node, NodeProps } from "@xyflow/react";
+import React from "react";
 
 export type DataProps = {
-    object: TerraNode
+    object: TerraNode;
+};
+
+interface NodeComponentProps {
+    icon: React.FC<any>;
+    label: string;
+    props: NodeProps<Node<DataProps>>;
+    background: string;
+    children: React.ReactNode;
 }
 
-export function NodeComponent({ icon: Icon, label, props, background, children }: { icon: React.FC<any>; label: string, props: NodeProps<Node<DataProps>>, background: string, children: any}) {
+export function NodeComponent({
+    icon: Icon,
+    label,
+    props,
+    background,
+    children,
+}: NodeComponentProps) {
     return (
-        <div className="text-updater-node">
+        <Box className="text-updater-node">
             {children}
-
-            <div style={{borderRadius: "4px", overflow: "hidden", padding: "10px", backgroundColor: background, color: "white", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)"}}>
-
+            <Box
+                p={5}
+                bg={"var(--background)"}
+                bd={`5px solid ${background}`}
+                style={{ borderRadius: "10px" }}
+                w={250}
+                h={100}
+            >
+                <Box
+                    px={8}
+                    py={4}
+                    style={{
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        backgroundColor: background,
+                        color: "white",
+                        borderRadius: "16px",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 6,
+                        fontSize: "12px",
+                    }}
+                >
+                    <Icon />
+                </Box>
                 <Flex
                     justify="center"
                     align="center"
-                    direction="row"
-                    wrap="wrap"
-                    gap={"xs"}
+                    mt={6}
+                    style={{ fontWeight: 600, textTransform: "uppercase" }}
                 >
-                    <Icon color={"white"} />
-                    <Text color={"white"} fw={700} style={{fontSize: "8px"}}>{label}</Text>
-
+                    {props.data.object.name}
                 </Flex>
-                <p style={{fontWeight: "bold", fontSize: '8px', textAlign: "center"}}>{props.data.object.name}</p>
-
-            </div>
-        </div>
+            </Box>
+        </Box>
     );
 }
 

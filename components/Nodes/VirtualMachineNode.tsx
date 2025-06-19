@@ -1,35 +1,56 @@
-import { PiComputerTowerBold } from "react-icons/pi";
-import NodeComponent, {DataProps} from "@/components/Nodes/Node";
-import {Connection, Edge, Handle, Node, NodeProps, Position, useNodeConnections, useReactFlow} from "@xyflow/react";
+import NodeComponent, { DataProps } from "@/components/Nodes/Node";
+import {
+    Connection,
+    Edge,
+    Handle,
+    Node,
+    NodeProps,
+    Position,
+    useNodeConnections,
+    useReactFlow,
+} from "@xyflow/react";
+import { EdgeBase } from "@xyflow/system";
 import React from "react";
-import {EdgeBase} from "@xyflow/system";
+import { PiComputerTowerBold } from "react-icons/pi";
 
 export function ProxmoxNode(props: NodeProps<Node<DataProps>>) {
     const [count, setCount] = React.useState(0);
 
-
     const connections = useNodeConnections({
-        handleType: 'target',
+        handleType: "target",
         onDisconnect: () => {
             setCount(0);
         },
-        onConnect: ()=> {
+        onConnect: () => {
             setCount(count + 1);
-        }
+        },
     });
 
     const flowInstance = useReactFlow<Node, Edge>();
 
     const isValidConnection = (edge: EdgeBase | Connection) => {
-        const targetNode: NodeProps<Node<DataProps>> = flowInstance.getNode(edge.source) as unknown as NodeProps<Node<DataProps>>;
+        const targetNode: NodeProps<Node<DataProps>> = flowInstance.getNode(
+            edge.source
+        ) as unknown as NodeProps<Node<DataProps>>;
         return targetNode.data.object.getNodeType() == "Network";
-    }
+    };
 
     return (
-        <NodeComponent icon={PiComputerTowerBold} label={"Virtual Machine"} props={props} background={"rgba(237, 7, 180, 0.8)"}>
-            <Handle type="target" position={Position.Left} isConnectable={count === 0} isValidConnection={isValidConnection} />
+        <NodeComponent
+            icon={PiComputerTowerBold}
+            label={"Virtual Machine"}
+            props={props}
+            background={"rgb(237, 7, 180)"}
+        >
+            <Handle
+                type="target"
+                position={Position.Left}
+                isConnectable={count === 0}
+                isValidConnection={isValidConnection}
+                style={{ backgroundColor: "rgb(66, 135, 245)" }}
+            />
         </NodeComponent>
-    )
+    );
 }
 
 export default ProxmoxNode;

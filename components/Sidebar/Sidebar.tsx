@@ -46,12 +46,15 @@ export function Sidebar({
         closeModal();
         const newNode: Node = {
             id: `node-${Date.now()}`,
-            position: { x: 0, y: 0 },
+            // add at center of current viewport
+            position: {
+                x: 50,
+                y: 50,
+            },
             data: { object },
             type: object.getNodeType(),
         };
         flowInstance.addNodes(newNode);
-        flowInstance.fitView();
     };
 
     const vmTemplateLinks = vmTemplates.map((template) => {
