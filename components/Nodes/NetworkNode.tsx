@@ -52,12 +52,22 @@ export function ProxmoxNode(props: NodeProps<Node<DataProps>>) {
                 position={Position.Left}
                 isConnectable={count === 0}
                 isValidConnection={isValidConnection}
-                style={{ backgroundColor: "rgb(230, 113, 0)" }}
+                style={{
+                    backgroundColor: "rgb(230, 113, 0)",
+                    zIndex: 1,
+                    width: 10,
+                    height: 10,
+                }}
             />
             <Handle
                 type="source"
                 position={Position.Right}
-                style={{ backgroundColor: "rgb(66, 135, 245)" }}
+                style={{
+                    backgroundColor: "rgb(66, 135, 245)",
+                    zIndex: 1,
+                    width: 10,
+                    height: 10,
+                }}
             />
         </NodeComponent>
     );
