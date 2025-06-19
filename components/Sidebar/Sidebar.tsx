@@ -2,22 +2,22 @@
 
 import { CreateModal } from "@/components/CreateModal/CreateModal";
 import { LinksGroup } from "@/components/LinksGroup/LinksGroup";
+import { Configuration } from "@/util/configuration";
 import { Network } from "@/util/network";
 import { ProxmoxProvider } from "@/util/proxmox";
 import { TerraNode } from "@/util/types";
 import { VirtualMachine } from "@/util/virtual_machine";
 import { VirtualMachineTemplate } from "@/util/virtual_machine_template";
 import { Menu, ScrollArea, Text } from "@mantine/core";
-import {addEdge, Edge, Node, useReactFlow} from "@xyflow/react";
+import { Edge, Node, useReactFlow } from "@xyflow/react";
 import { useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { PiComputerTowerBold, PiNetwork, PiPlusBold } from "react-icons/pi";
 import { SiProxmox } from "react-icons/si";
 import classes from "./Sidebar.module.css";
-import {Configuration} from "@/util/configuration";
 
 interface SidebarProps {
-    config: Configuration,
+    config: Configuration;
     onOpenVMTemplateDrawer: () => void;
     onEditVMTemplate: (template: VirtualMachineTemplate) => void;
     onDeleteVMTemplate: (template: VirtualMachineTemplate) => void;
@@ -45,11 +45,10 @@ export function Sidebar({
         setModalOpened(false);
     };
 
-    const handleSubmit = (object: TerraNode, openSettings: boolean) => {
+    const handleSubmit = (object: TerraNode) => {
         closeModal();
         const newNode: Node = {
             id: `node-${Date.now()}`,
-            // add at center of current viewport
             position: {
                 x: 50,
                 y: 50,
@@ -60,7 +59,7 @@ export function Sidebar({
 
         if (object.getNodeType() == "Proxmox") {
             config.addProvider(object as ProxmoxProvider);
-            console.log(config)
+            console.log(config);
         }
 
         flowInstance.addNodes(newNode);

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 interface CreateModalProps {
     opened: boolean;
     onClose: () => void;
-    onSubmit: (object: TerraNode, openSettings: boolean) => void;
+    onSubmit: (object: TerraNode) => void;
     object: TerraNode;
 }
 
@@ -17,22 +17,19 @@ export function CreateModal({
 }: CreateModalProps) {
     const [name, setName] = useState("");
 
-    const handleSubmit = useCallback(
-        (openSettings: boolean) => {
-            if (name.trim()) {
-                object.name = name.trim();
-                onSubmit(object, openSettings);
-                setName("");
-                onClose();
-            }
-        },
-        [name, onSubmit, onClose]
-    );
+    const handleSubmit = useCallback(() => {
+        if (name.trim()) {
+            object.name = name.trim();
+            onSubmit(object);
+            setName("");
+            onClose();
+        }
+    }, [name, onSubmit, onClose]);
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === "Enter" && opened) {
-                handleSubmit(false);
+                handleSubmit();
             }
         };
 
@@ -57,18 +54,15 @@ export function CreateModal({
                 onChange={(event) => setName(event.currentTarget.value)}
                 onKeyDown={(event) => {
                     if (event.key === "Enter") {
-                        handleSubmit(false);
+                        handleSubmit();
                     }
                 }}
                 data-autofocus
             />
             <Group mt="md">
-                <Button onClick={() => handleSubmit(false)}>OK</Button>
+                <Button onClick={() => handleSubmit()}>OK</Button>
                 <Button variant="default" onClick={onClose}>
                     Cancel
-                </Button>
-                <Button onClick={() => handleSubmit(true)} variant="outline">
-                    Settings
                 </Button>
             </Group>
         </Modal>

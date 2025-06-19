@@ -14,6 +14,7 @@ import {
     Title,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { FaGithub } from "react-icons/fa6";
 
 interface Contributor {
     login: string;
@@ -126,7 +127,8 @@ export default function Home() {
                         size="md"
                         radius="md"
                     >
-                        Contribute on GitHub
+                        <FaGithub style={{ marginRight: 8 }} /> Contribute on
+                        GitHub
                     </Button>
                 </Stack>
             </Container>
