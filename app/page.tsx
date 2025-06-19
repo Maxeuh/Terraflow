@@ -11,10 +11,11 @@ import { VirtualMachineTemplate } from "@/util/virtual_machine_template";
 import { VMService } from "@/util/virtual_machine_template_service";
 import { Flex } from "@mantine/core";
 import {
+    addEdge,
     Background,
-    BackgroundVariant,
+    BackgroundVariant, Connection,
     Controls,
-    NodeTypes,
+    NodeTypes, OnConnect,
     ReactFlow,
     ReactFlowProvider,
     useEdgesState,
@@ -30,8 +31,8 @@ const nodeTypes: NodeTypes = {
 };
 
 export default function Home() {
-    const [nodes, _, onNodesChange] = useNodesState<any>([]);
-    const [edges, __, onEdgesChange] = useEdgesState([]);
+    const [nodes, setNodes, onNodesChange] = useNodesState<any>([]);
+    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
     const [drawerOpened, setDrawerOpened] = useState(false);
     const [drawerType, setDrawerType] = useState("");
@@ -44,6 +45,11 @@ export default function Home() {
     );
     const [currentTemplate, setCurrentTemplate] =
         useState<VirtualMachineTemplate | null>(null);
+
+    const onConnect: OnConnect = useCallback(
+        (params: Connection) => setEdges((eds) => addEdge(params, eds)),
+        [setEdges]
+    )
 
     useEffect(() => {
         const vmService = vmServiceRef.current;
@@ -144,6 +150,7 @@ export default function Home() {
                         edges={edges}
                         onNodesChange={onNodesChange}
                         onEdgesChange={onEdgesChange}
+                        onConnect={onConnect}
                         colorMode={"system"}
                         proOptions={{ hideAttribution: true }}
                         snapGrid={[20, 20]}
