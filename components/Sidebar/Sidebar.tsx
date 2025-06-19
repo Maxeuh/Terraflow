@@ -39,7 +39,6 @@ export function Sidebar({
 
     const handleSubmit = (object: TerraNode, openSettings: boolean) => {
         closeModal();
-        console.log("Submitted object:", object);
         const newNode: Node = {
             id: `node-${Date.now()}`,
             position: { x: 0, y: 0 },

@@ -8,10 +8,6 @@ export type DataProps = {
 }
 
 export function NodeComponent({ icon: Icon, label, props, background, children }: { icon: React.FC<any>; label: string, props: NodeProps<Node<DataProps>>, background: string, children: any}) {
-    const onChange = useCallback((evt: any) => {
-        console.log(evt.target.value);
-    }, []);
-    console.log(props)
     return (
         <div className="text-updater-node">
             {children}

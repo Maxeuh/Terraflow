@@ -44,6 +44,9 @@ export default function Home() {
     const [currentTemplate, setCurrentTemplate] =
         useState<VirtualMachineTemplate | null>(null);
 
+    const onChange = useCallback((props) => {
+        console.log(props)
+    }, [])
     useEffect(() => {
         const vmService = vmServiceRef.current;
 
@@ -118,6 +121,7 @@ export default function Home() {
                         edges={edges}
                         onNodesChange={onNodesChange}
                         onEdgesChange={onEdgesChange}
+                        onChange={onChange}
                         colorMode={"system"}
                         proOptions={{ hideAttribution: true }}
                         snapGrid={[20, 20]}
