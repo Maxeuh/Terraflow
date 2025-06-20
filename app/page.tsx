@@ -1,19 +1,22 @@
 "use client";
 
 import { useHeaderContent } from "@/components/Header/HeaderContext";
+import { ImportModal } from "@/components/ImportModal/ImportModal";
 import NetworkNode from "@/components/Nodes/NetworkNode";
 import ProxmoxNode from "@/components/Nodes/ProxmoxNode";
 import VirtualMachineNode from "@/components/Nodes/VirtualMachineNode";
 import { SettingsDrawer } from "@/components/SettingsDrawer/SettingsDrawer";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { Configuration } from "@/util/configuration";
+import { exportToFile } from "@/util/export_import";
+import { createNodesAndEdges } from "@/util/flow_utils";
 import { Network } from "@/util/network";
 import { ProxmoxProvider } from "@/util/proxmox";
 import { FormField, TerraNode } from "@/util/types";
 import { VirtualMachine } from "@/util/virtual_machine";
 import { VirtualMachineTemplate } from "@/util/virtual_machine_template";
 import { VMService } from "@/util/virtual_machine_template_service";
-import { Button, Flex } from "@mantine/core";
+import { Button, Flex, Menu, useMantineTheme } from "@mantine/core";
 import {
     addEdge,
     Background,
@@ -32,7 +35,8 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { JSX, useCallback, useEffect, useRef, useState } from "react";
-import { FaFileExport } from "react-icons/fa6";
+import { FaSave } from "react-icons/fa";
+import { FaChevronDown, FaFileExport, FaFileImport } from "react-icons/fa6";
 
 const nodeTypes: NodeTypes = {
     Proxmox: ProxmoxNode,
@@ -49,6 +53,8 @@ export default function Home() {
     const [formFields, setFormFields] = useState<FormField[]>([]);
 
     const [config, setConfig] = useState(new Configuration());
+    const [importModalOpened, setImportModalOpened] = useState(false);
+    const theme = useMantineTheme();
 
     const vmServiceRef = useRef(new VMService(config));
     const [vmTemplates, setVmTemplates] = useState<VirtualMachineTemplate[]>(
@@ -63,20 +69,43 @@ export default function Home() {
         setHeaderContent(
             <>
                 <Button onClick={() => config.generateTerraformFile()}>
-                    <FaFileExport style={{ marginRight: 8 }} />
-                    Exporter
+                    <FaFileExport style={{ marginRight: 8 }} /> Exporter
+                    Terraform
                 </Button>
-                {/* <Button variant="light">
-                    <FaFileImport style={{ marginRight: 8 }} />
-                    Import
-                </Button> */}
+
+                <Menu>
+                    <Menu.Target>
+                        <Button variant="outline">
+                            <FaSave style={{ marginRight: 8 }} /> Sauvegarde{" "}
+                            <FaChevronDown style={{ marginLeft: 8 }} />
+                        </Button>
+                    </Menu.Target>
+                    <Menu.Dropdown>
+                        <Menu.Item
+                            leftSection={
+                                <FaFileExport style={{ marginRight: 4 }} />
+                            }
+                            onClick={() => exportToFile(config)}
+                        >
+                            Exporter
+                        </Menu.Item>
+                        <Menu.Item
+                            leftSection={
+                                <FaFileImport style={{ marginRight: 4 }} />
+                            }
+                            onClick={() => setImportModalOpened(true)}
+                        >
+                            Importer
+                        </Menu.Item>
+                    </Menu.Dropdown>
+                </Menu>
             </>
         );
 
         return () => {
             setHeaderContent(null);
         };
-    }, [setHeaderContent]);
+    }, [setHeaderContent, config, theme.colors]);
 
     const onConnect: OnConnect = useCallback(
         (params: Connection) => {
@@ -97,8 +126,6 @@ export default function Home() {
                     const virtualMachine = targetObject as VirtualMachine;
                     network.addMachine(virtualMachine);
                 }
-
-                console.log(config.generateConfigFileContent());
             }
 
             // Ajouter la connexion à l'état des arêtes
@@ -123,15 +150,12 @@ export default function Home() {
 
                     const sourceName = sourceObject.getNodeType();
                     const targetName = targetObject.getNodeType();
-                    console.log(sourceName);
-                    console.log(targetName);
 
                     if (sourceName == "Proxmox" && targetName == "Network") {
                         const proxmox: ProxmoxProvider =
                             sourceObject as ProxmoxProvider;
                         const network: Network = targetObject as Network;
                         proxmox.removeNetwork(network);
-                        console.log("ici");
                     } else if (
                         sourceName == "Network" &&
                         targetName == "Virtual Machine"
@@ -152,8 +176,6 @@ export default function Home() {
                     config.removeProvider(nodeObject as ProxmoxProvider);
                 }
             });
-
-            console.log(config.generateConfigFileContent());
         },
         [nodes, config]
     );
@@ -230,8 +252,23 @@ export default function Home() {
         [currentTemplate, drawerType]
     );
 
+    const handleImport = useCallback((importedConfig: Configuration) => {
+        setConfig(importedConfig);
+        vmServiceRef.current = new VMService(importedConfig);
+        setVmTemplates([...vmServiceRef.current.getAllVMTemplates()]);
+        const { nodes: newNodes, edges: newEdges } =
+            createNodesAndEdges(importedConfig);
+        setNodes(newNodes as any);
+        setEdges(newEdges as any);
+    }, []);
+
     return (
         <ReactFlowProvider>
+            <ImportModal
+                opened={importModalOpened}
+                onClose={() => setImportModalOpened(false)}
+                onImport={handleImport}
+            />
             <Flex flex={"row"} direction={"row"}>
                 <Sidebar
                     config={config}

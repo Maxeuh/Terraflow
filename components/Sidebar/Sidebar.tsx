@@ -59,7 +59,6 @@ export function Sidebar({
 
         if (object.getNodeType() == "Proxmox") {
             config.addProvider(object as ProxmoxProvider);
-            console.log(config);
         }
 
         flowInstance.addNodes(newNode);
