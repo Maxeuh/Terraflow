@@ -81,7 +81,7 @@ export default function NodeComponent({
                         display: "inline-flex",
                         alignItems: "center",
                         gap: 6,
-                        fontSize: "12px",
+                        fontSize: "10px",
                     }}
                 >
                     <Icon />

@@ -2,7 +2,6 @@
 
 import { useHeaderContent } from "@/components/Header/HeaderContext";
 import NetworkNode from "@/components/Nodes/NetworkNode";
-import { DataProps } from "@/components/Nodes/Node";
 import ProxmoxNode from "@/components/Nodes/ProxmoxNode";
 import VirtualMachineNode from "@/components/Nodes/VirtualMachineNode";
 import { SettingsDrawer } from "@/components/SettingsDrawer/SettingsDrawer";
@@ -23,7 +22,6 @@ import {
     Controls,
     Edge,
     Node,
-    NodeProps,
     NodeTypes,
     OnConnect,
     OnDelete,
@@ -82,42 +80,36 @@ export default function Home() {
 
     const onConnect: OnConnect = useCallback(
         (params: Connection) => {
-            let oldEdges = [...edges];
-            let newEdges = addEdge(params, edges);
+            // Utiliser directement les paramètres de connexion fournis
+            const sourceNode = nodes.find((node) => node.id === params.source);
+            const targetNode = nodes.find((node) => node.id === params.target);
 
-            const edgesAdded = newEdges.filter(
-                (val) => !oldEdges.includes(val)
-            );
+            if (sourceNode && targetNode) {
+                const sourceObject: TerraNode = sourceNode.data.object;
+                const targetObject: TerraNode = targetNode.data.object;
 
-            const edge: Connection = edgesAdded[0];
+                if (sourceObject.getNodeType() === "Proxmox") {
+                    const proxmox = sourceObject as ProxmoxProvider;
+                    const network = targetObject as Network;
+                    proxmox.addNetwork(network);
+                } else if (targetObject.getNodeType() === "Virtual Machine") {
+                    const network = sourceObject as Network;
+                    const virtualMachine = targetObject as VirtualMachine;
+                    network.addMachine(virtualMachine);
+                }
 
-            const sourceNode = nodes.find((node) => node.id === edge.source);
-            const targetNode = nodes.find((node) => node.id === edge.target);
-
-            const sourceObject: TerraNode = sourceNode.data.object;
-            const targetObject: TerraNode = targetNode.data.object;
-
-            if (sourceObject.getNodeType() === "Proxmox") {
-                const proxmox = sourceObject as ProxmoxProvider;
-                const network = targetObject as Network;
-                proxmox.addNetwork(network);
-            } else if (targetObject.getNodeType() === "Virtual Machine") {
-                const network = sourceObject as Network;
-                const virtualMachine = targetObject as VirtualMachine;
-                network.addMachine(virtualMachine);
+                console.log(config.generateConfigFileContent());
             }
 
-            console.log(config.generateConfigFileContent());
-
-            setEdges(newEdges);
+            // Ajouter la connexion à l'état des arêtes
+            setEdges((eds) => addEdge(params, eds));
         },
-        [setEdges, nodes]
+        [nodes, config]
     );
 
     const onDelete: OnDelete<Node, Edge> = useCallback(
         ({ nodes: nds, edges: edgs }: { nodes: Node[]; edges: Edge[] }) => {
-            const oldEdges = [...edges];
-            edgs.map((edge) => {
+            edgs.forEach((edge) => {
                 const sourceNode = nodes.find(
                     (node) => node.id === edge.source
                 );
@@ -125,46 +117,45 @@ export default function Home() {
                     (node) => node.id === edge.target
                 );
 
-                const sourceObject: TerraNode = sourceNode.data.object;
-                const targetObject: TerraNode = targetNode.data.object;
+                if (sourceNode && targetNode) {
+                    const sourceObject: TerraNode = sourceNode.data.object;
+                    const targetObject: TerraNode = targetNode.data.object;
 
-                const sourceName = sourceObject.getNodeType();
-                const targetName = targetObject.getNodeType();
-                console.log(sourceName);
-                console.log(targetName);
+                    const sourceName = sourceObject.getNodeType();
+                    const targetName = targetObject.getNodeType();
+                    console.log(sourceName);
+                    console.log(targetName);
 
-                if (sourceName == "Proxmox" && targetName == "Network") {
-                    const proxmox: ProxmoxProvider =
-                        sourceObject as ProxmoxProvider;
-                    const network: Network = targetObject as Network;
-                    proxmox.removeNetwork(network);
-                    console.log("ici");
-                } else if (
-                    sourceName == "Network" &&
-                    targetName == "Virtual Machine"
-                ) {
-                    const network: Network = sourceObject as Network;
-                    const virtualMachine: VirtualMachine =
-                        targetObject as VirtualMachine;
+                    if (sourceName == "Proxmox" && targetName == "Network") {
+                        const proxmox: ProxmoxProvider =
+                            sourceObject as ProxmoxProvider;
+                        const network: Network = targetObject as Network;
+                        proxmox.removeNetwork(network);
+                        console.log("ici");
+                    } else if (
+                        sourceName == "Network" &&
+                        targetName == "Virtual Machine"
+                    ) {
+                        const network: Network = sourceObject as Network;
+                        const virtualMachine: VirtualMachine =
+                            targetObject as VirtualMachine;
 
-                    network.removeMachine(virtualMachine);
+                        network.removeMachine(virtualMachine);
+                    }
                 }
             });
 
-            nds.map((n: Node) => {
-                const node: NodeProps<Node<DataProps>> =
-                    n as unknown as NodeProps<Node<DataProps>>;
-
-                const nodeObject: TerraNode = node.data.object;
-                const nodeName: string = nodeObject.getNodeType();
-
-                if (nodeName == "Proxmox") {
+            nds.forEach((n: any) => {
+                const nodeObject: TerraNode = n.data.object;
+                const nodeType = nodeObject.getNodeType();
+                if (nodeType == "Proxmox") {
                     config.removeProvider(nodeObject as ProxmoxProvider);
                 }
             });
+
             console.log(config.generateConfigFileContent());
         },
-        [nodes]
+        [nodes, config]
     );
 
     useEffect(() => {

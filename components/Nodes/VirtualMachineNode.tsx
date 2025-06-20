@@ -23,7 +23,7 @@ export function ProxmoxNode(props: NodeProps<Node<DataProps>>) {
             setCount(0);
         },
         onConnect: () => {
-            setCount(count + 1);
+            setCount((prevCount) => prevCount + 1);
         },
     });
 
