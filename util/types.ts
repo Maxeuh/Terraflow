@@ -77,7 +77,11 @@ export abstract class TerraNode {
             const varType: FormField | undefined = this._varTypes.find((v) => v.name === key);
 
             if (varType) {
-                fields.push(varType);
+                // Utiliser la valeur actuelle de la propriété au lieu de celle stockée dans varType
+                fields.push({
+                    ...varType,
+                    value: value // Utiliser la valeur actuelle de la propriété
+                });
             } else {
                 if (attrType === "string") {
                     fieldType = FieldType.String;

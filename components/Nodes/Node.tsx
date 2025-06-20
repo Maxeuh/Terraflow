@@ -66,7 +66,7 @@ export default function NodeComponent({
                 align={"center"}
                 justify={"center"}
             >
-                {props.data.object.name}
+                {props.data.object.name || "Unnamed"}
                 <Box
                     px={8}
                     py={4}
@@ -103,7 +103,9 @@ export default function NodeComponent({
                 opened={settingsOpened}
                 onClose={handleSettingsClose}
                 onSubmit={handleFormSubmit}
-                title={`Edit ${terraNode.name || label}`}
+                title={`Edit ${
+                    terraNode.name || label || terraNode.getNodeType()
+                }`}
                 forms={terraNode.getFormFields()}
             />
         </Box>
