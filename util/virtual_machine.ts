@@ -5,7 +5,8 @@ import { VirtualMachineTemplate } from "@/util/virtual_machine_template";
 
 export class VirtualMachine extends TerraNode {
 
-    public username: string = "root";
+    public username: string = "user";
+    public password: string = "azerty";
     public keys: string = "";
     public address: string = "0.0.0.0/24";
     public gateway: string = "0.0.0.0";
@@ -29,6 +30,14 @@ export class VirtualMachine extends TerraNode {
                 value: this.name,
                 mandatory: true,
                 label: "Name"
+            },
+            {
+                name: "password",
+                type: FieldType.Password,
+                regex: /^[a-zA-Z0-9-]+$/,
+                value: this.name,
+                mandatory: true,
+                label: "Password",
             },
             {
                 name: "address",
@@ -69,7 +78,8 @@ export class VirtualMachine extends TerraNode {
   provider = ${this._network?._proxmox?.getProviderName()}
   name      = "${this.name}"
   node_name = "${this._network?._proxmox?.node_name}"
-
+  started  = true
+  stop_on_destroy = false
   depends_on = [
     proxmox_virtual_environment_vm.${this._hardware?.getNodeID() + "-" + this._network?._proxmox?.getUUID()}
   ]
@@ -88,6 +98,7 @@ export class VirtualMachine extends TerraNode {
     user_account {
       username = "${this.username}"
       # keys     = ${this.keys}
+      password = "${this.password}"
     }
   }
 
